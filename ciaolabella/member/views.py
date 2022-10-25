@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from .models import MEMBER, ECOPOINT
 import logging
@@ -74,22 +75,24 @@ def member_page(request):
 
     return render(request, 'member/mypage.html', context)
 
-
+#회원 가입
 def member_reg(request):
     if request.method == "GET":
+        if request.session.get("row_id", None) == None :
+            return redirect("index")
         return render(request, 'member/register.html')
 
     elif request.method == "POST":
 
         context = {}
-        user_nm = request.POST["user_nm"]
-        user_id = request.POST["user_id"]
-        user_pw = request.POST["user_pw"]
-        email_txt = request.POST["email_txt"]
-        phone_nb = request.POST["phone_nb"]
-        region_kb = request.POST["region_kb"]
-        age_nb = request.POST["age_nb"]
-        gender_kb = request.POST["gender_kb"]
+        user_nm = request.POST.get("user_nm", False)
+        user_id = request.POST.get("user_id", False)
+        user_pw = request.POST.get("user_pw", False)
+        email_txt = request.POST.get("email_txt", False)
+        phone_nb = request.POST.get("phone_nb", False)
+        region_kb = request.POST.get("region_kb", False)
+        age_nb = request.POST.get("age_nb", False)
+        gender_kb = request.POST.get("gender_kb", False)
 
         # 회원가입 중복체크
         rs = MEMBER.objects.filter(user_id=user_id)
@@ -97,7 +100,7 @@ def member_reg(request):
         if rs.exists():
             context['message'] = user_id + "가 중복됩니다."
             return render(request, 'member/register.html', context)
-
+        # elif 비밀번호 != 비밀번호 재입력 : 비밀번호 다시 확인해달라는 창
         else:
             MEMBER.objects.create(
                 user_id=user_id, user_pw=user_pw, user_nm=user_nm, email_txt=email_txt, phone_nb=phone_nb, region_kb=region_kb, age_nb=age_nb, gender_kb=gender_kb,
@@ -108,6 +111,8 @@ def member_reg(request):
 
 def member_login(request):
     if request.method == "GET":
+        if request.session.get("row_id", None) is not None : 
+            return redirect("index")
         return render(request, 'member/login.html')
 
     elif request.method == "POST":
