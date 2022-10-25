@@ -6,7 +6,7 @@ class MEMBER(models.Model):
     user_nm = models.CharField(db_column='user_nm', max_length=50, null=False)
     user_id = models.CharField(db_column='user_id', max_length=100, null=False)
     user_pw = models.CharField(db_column='user_pw', max_length=100)
-    age_nb = models.IntegerField(db_column='age_nb', null=False)
+    birth_nb = models.CharField(db_column='birth_nb', max_length=20, null=False)
     gender_kb = models.CharField(db_column='gender_kb', max_length=20, null=False)
     email_txt = models.EmailField(db_column='email_txt', max_length=150)
     phone_nb = models.CharField(db_column='phone_nb', max_length=150)
