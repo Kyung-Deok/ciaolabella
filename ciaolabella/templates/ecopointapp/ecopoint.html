@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Ciao label la</title>
+    {% load static %}
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/logo_rel2.png' %}" rel="icon" type='images/png'>
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Lora:ital,wght@1,700&family=Permanent+Marker&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+	<script>//ajax를 이용한 post통신에서 csrf_token문제 해결
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+        });
+    </script>
+    <script>
+        $(function(){
+            $("#upload_btn").click(function(){
+                var image = $("#inputfile")[0].files[0];
+                var formData = new FormData();
+
+                formData.append('image', image);
+                formData.append('csrfmiddlewaretoken', csrftoken);
+                $.ajax({
+                	enctype: 'multipart/form-data',
+                	url: '/ecopoint/',
+                	type: "POST",
+                	async: true,
+                	data: formData,
+                    processData: false,
+		            contentType: false,
+                	dataType: "json",
+                	success: function(data){
+                        // 결과 사진 가져오기.
+                        //$("#outputfile").attr("src" , "{% static '/ecopoint_static/img_output/ecopoint1/image0.jpg'%}");
+                        $("#result").html("");
+                        $("#result").append(`<div class="about-img position-relative overflow-hidden p-5 pe-0" id="result1">
+                                        <img class="img-fluid w-100" src="{% static '/ecopoint_static/img_output/ecopoint1/image0.jpg' %}" id="outputfile">
+                                        </div>`);
+                        Swal.fire({
+                            icon: 'info', 
+                            text: data['msg'].replace(/\n/ig, '\n')
+                        });
+                	},
+                	error: function(request, error){
+                        Swal.fire({
+                            icon : "warning",
+                            text : "다른 사진을 선택해주세요."
+                        });    
+                        
+                	}
+                });
+
+            });
+        });
+    </script>
+
+    <style>
+        body, h1, h2, h3, h4, h5, h6, p, span, a{
+            font-family: 'Jua', sans-serif !important;
+            font-family: 'Lora', serif;
+            font-family: 'Permanent Marker', cursive;
+        }
+        .display-7{
+            font-size:calc(1rem + 1.25vw);
+            font-weight:300;
+            line-height:2;
+        }
+        @media (min-width: 1200px){
+            .display-7{font-size:1.25rem}
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar Start -->
+        <div class="container-fluid nav-bar bg-transparent">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+                <a href="{% url 'index' %}" class="navbar-brand d-flex align-items-center text-center">
+                    <div class="icon p-2 me-2">
+                        <i class="fas fa-leaf fa-1x"></i>
+                    </div>
+                    <h1 class="m-0 text-primary">Ciao label la</h1>
+                </a>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="{% url 'index' %}" class="nav-item nav-link">HOME</a>
+                        <a href="{% url 'about' %}" class="nav-item nav-link">ABOUT</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">ECO POINT</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="{% url 'aboutecopoint' %}" class="dropdown-item">ABOUT ECO POINT</a>
+                                <a href="{% url 'ecopoint' %}" class="dropdown-item">ECO POINT 1</a>
+                                <a href="{% url 'ecopoint2' %}" class="dropdown-item">ECO POINT 2</a>
+                            </div>
+                        </div>
+                        <a href="{% url 'nolabel' %}" class="nav-item nav-link">NO LABEL</a>
+                        <a href="{% url 'lesswaste' %}" class="nav-item nav-link">LESS WASTE</a>
+                    </div>
+                    <div class="navbar-nav ms-auto">
+                        {% if not 'row_id' in request.session %}
+                            <a href="{% url 'member_reg' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;" >SIGNUP</a><br>
+                            <a href="{% url 'member_login' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;" >SIGNIN</a>
+                        {% else %}
+                            <!-- <p style="padding: 10px">{{ request.session.user_id }} 님 어서오세요.</p> -->
+                            <br><br>
+                            <a href="{% url 'member_page' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;">MYPAGE</a>
+                            <a href="{% url 'member_logout' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;">LOGOUT</a>
+                        {% endif %}
+
+                        {% if message %}
+                        <script>alert('{{ message }}');</script>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- Navbar End -->
+
+
+        <!-- Header Start -->
+        <div class="container-fluid header bg-white p-0">
+            <div class="col-md-12 p-5 mt-lg-5"></div>
+            <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
+                <div class="col-md-6 p-5 mt-lg-5">
+                    <h1 class="display-5 animated fadeIn mb-4">에코포인트 적립</h1>
+                    <p class="display-7">플라스틱을 깨끗이 씻어서 분리수거하면 에코포인트가 적립됩니다!</p>
+                </div>
+                <div class="col-md-6 animated fadeIn">
+                    <img class="img-fluid" src="img/header.jpg" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- Header End -->
+
+        <!-- About Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s" id="result">
+                        <div class="about-img position-relative overflow-hidden p-5 pe-0" id="result1">
+                            <img class="img-fluid w-100" src="{% static 'img/logo.png' %}" id="outputfile" >
+                        </div>
+                    </div>
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                        <h2 class="mb-4">안내사항</h2>
+                        <p class="display-7"><i class="fa fa-check text-primary me-3"></i>[파일 선택] 버튼을 클릭하여 분리수거 인증사진을 가져오세요.</p>
+                        <p class="display-7"><i class="fa fa-check text-primary me-3"></i>모바일인 경우 카메라로 바로 사진을 찍을 수 있습니다.</p>
+                        <p class="display-7"><i class="fa fa-check text-primary me-3"></i>[사진 업로드] 버튼을 클릭하세요.</p>
+                        <p class="display-7"><i class="fa fa-check text-primary me-3"></i>라벨이 제거되었다면 ECOPOINT가 적립됩니다!</p>
+                        <p class="display-7"><i class="fa fa-check text-primary me-3"></i>라벨을 제거하기 귀찮다면 무라벨 제품을 구매해보세요!</p>
+                        <div class="d-grid gap-2 col-12">
+                            <input type="file" name="image" class="form-control-file btn btn-primary py-3 px-4 me-2 display-7" id="inputfile">
+                            <button class="btn btn-primary py-3 px-4 me-2 display-7" id="upload_btn"><i class="fas fa-upload"></i>  사진 업로드</button>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 col-9 mx-auto">
+                        <a href="{% url 'ecopoint' %}" class="btn btn-dark py-3 px-4 display-7"><i class="fas fa-coins fa-1x fa-solid"></i>  다시 적립하기</a>
+                        <a href="{% url 'nolabel' %}" class="btn btn-dark py-3 px-4 display-7"><i class="fas fa-bottle-water fa-1x"></i>   무라벨 제품 보러가기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About End -->
+
+        <!-- Footer Start -->
+        <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+            <div class="container py-3">
+                <div class="row g-5">
+                    <div class="col-lg-6 col-md-6">
+                        <h5 class="text-white mb-4">Team Ohjijo</h5>
+                        <a class="btn btn-link text-white-50" href="https://github.com/hanna-joo"><i class="fab fa-github fa-1x"></i>  [DE] hanna joo</a>
+                        <a class="btn btn-link text-white-50" href="https://github.com/yu-je0ng"><i class="fab fa-github fa-1x"></i>  [DE] yujeong go</a>
+                        <a class="btn btn-link text-white-50" href="https://github.com/edusby"><i class="fab fa-github fa-1x"></i>  [DE] booyong shin</a>
+                        <a class="btn btn-link text-white-50" href="https://github.com/SoyeoAn"><i class="fab fa-github fa-1x"></i>  [DS] soyeon an</a>
+                        <p class="btn btn-link text-white-50" href="https://github.com/ShinGieun"><i class="fab fa-github fa-1x"></i>  [DS] gieun shin</p>
+                        <p class="btn btn-link text-white-50" href="https://github.com/changhwanin"><i class="fab fa-github fa-1x"></i>  [DS] changhwan in</p>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <h5 class="text-white mb-4">Quick Links</h5>
+                        <a class="btn btn-link text-white-50" href="">Home</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'about' %}">About Us</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'ecopoint' %}">Eco Point</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'nolabel' %}">No Label</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'lesswaste' %}">Less Waste</a>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="copyright">
+                    <div class="row">
+                        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                            &copy; <a class="border-bottom" href="#">Ciao label la</a>, All Right Reserved.
+							
+							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+							Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+                        </div>
+                        <div class="col-md-6 text-center text-md-end">
+                            <div class="footer-menu">
+                                <a href="">Home</a>
+                                <a href="">Cookies</a>
+                                <a href="">Help</a>
+                                <a href="">FQAs</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

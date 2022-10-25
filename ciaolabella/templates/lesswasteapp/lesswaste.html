@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Ciao label la</title>
+    {% load static %}
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/logo_rel2.png' %}" rel="icon" type='images/png'>
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Lora:ital,wght@1,700&family=Permanent+Marker&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        body, h1, h2, h3, h4, h5, h6, p, span, a{
+            font-family: 'Jua', sans-serif !important;
+            font-family: 'Lora', serif;
+            font-family: 'Permanent Marker', cursive;
+        }
+        .display-7{
+            font-size:calc(1rem + 1.25vw);
+            font-weight:300;
+            line-height:2;
+        }
+        @media (min-width: 1200px){
+            .display-7{font-size:1.25rem}
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="{% static 'map/js/map.js' %}"></script>
+
+    
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar Start -->
+        <div class="container-fluid nav-bar bg-transparent">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+                <a href="{% url 'index' %}" class="navbar-brand d-flex align-items-center text-center">
+                    <div class="icon p-2 me-2">
+                        <i class="fas fa-leaf fa-1x"></i>
+                    </div>
+                    <h1 class="m-0 text-primary">Ciao label la</h1>
+                </a>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="{% url 'index' %}" class="nav-item nav-link">HOME</a>
+                        <a href="{% url 'about' %}" class="nav-item nav-link">ABOUT</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">ECO POINT</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="{% url 'aboutecopoint' %}" class="dropdown-item">ABOUT ECO POINT</a>
+                                <a href="{% url 'ecopoint' %}" class="dropdown-item">ECO POINT 1</a>
+                                <a href="{% url 'ecopoint2' %}" class="dropdown-item">ECO POINT 2</a>
+                            </div>
+                        </div>
+                        <a href="{% url 'nolabel' %}" class="nav-item nav-link">NO LABEL</a>
+                        <a href="{% url 'lesswaste' %}" class="nav-item nav-link">LESS WASTE</a>
+                    </div>
+                    <div class="navbar-nav ms-auto">
+                        {% if not 'row_id' in request.session %}
+                            <a href="{% url 'member_reg' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;" >SIGNUP</a><br>
+                            <a href="{% url 'member_login' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;" >SIGNIN</a>
+                        {% else %}
+                            <!-- <p style="padding: 10px">{{ request.session.user_id }} 님 어서오세요.</p> -->
+                            <br><br>
+                            <a href="{% url 'member_page' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;">MYPAGE</a>
+                            <a href="{% url 'member_logout' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;">LOGOUT</a>
+                        {% endif %}
+
+                        {% if message %}
+                        <script>alert('{{ message }}');</script>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- Navbar End -->
+
+
+        <!-- Header Start -->
+        <div class="container-fluid header bg-white p-0">
+            <div class="col-md-12 p-5 mt-lg-5"></div>
+            <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
+                <div class="col-md-8 p-5 mt-lg-5">
+                    <h1 class="display-5 animated fadeIn mb-4">제로웨이스트샵 &</h1>
+                    <h1 class="display-5 animated fadeIn mb-4">리사이클박스</h1>
+                    <p class="display-7"><i class="fa fa-check text-primary me-3"></i>제로웨이스트샵 : 살 때는 환경을 생각하는 리필샵과 생활용품점에서!</p> 
+                    <p class="display-7"><i class="fa fa-check text-primary me-3"></i>리사이클박스 : 버릴 때는 재활용도 하고 돈도 받는 리사이클박스에서!</p>
+                </div>
+                <div class="col-md-6 animated fadeIn">
+                    <img class="img-fluid" src="img/header.jpg" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- Header End -->
+
+        <!-- Contact Start -->
+        <div class="container-xxl py-3">
+            <div class="container">
+                <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                    <h1 class="mb-3">내 주변 서비스</h1>
+                    <p class="display-7">반경 10km 이내의 레스웨이스트 서비스를 이용해 보세요!</p>
+                </div>
+                <div class="row g-5 justify-content-md-center">
+                    <div class="col-md-12">
+                        <form id="my_search" action="{% url 'lesswaste' %}" method="post" class="btn btn-primary border-0 w-100 py-3">{% csrf_token %}
+                            <input id="userLat" type="hidden" name="userLat">
+                            <input id="userLng" type="hidden" name="userLng">
+                            <input type="submit" value="SEARCH BY MY LOCATION!" class="display-7 btn btn-primary border-0 w-100 py-3">
+                        </form>
+                    </div>
+                </div>
+                <div class="row h-100 g-10">
+                    <div class="col-md-12 wow fadeInUp" data-wow-delay="0.1s">
+                        <div id="map" style="width:100%;height:40rem;"></div>
+                            <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=eca8d2b40ead4033a0ca459ace5da008"></script>
+                            <script>
+                                var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+                                    mapOption = {
+                                        center: new kakao.maps.LatLng({{ center.0 }}, {{ center.1 }}), // 지도의 중심좌표
+                                        level: 7 // 지도의 확대 레벨
+                                    };
+                            
+                                var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+                                var positions1 = {{ zerowasteshop | safe }};
+                                var positions2 = {{ recyclebox | safe }};
+                                var imageSrc1 = "{% static 'img/buy_marker2.svg' %}";
+                                var imageSrc2 = "{% static 'img/throw_marker2.svg' %}";
+                                for (var i = 0; i < positions1.length; i ++) {
+                                    var imageSize = new kakao.maps.Size(40, 60);
+                                    var markerImage = new kakao.maps.MarkerImage(imageSrc1, imageSize);
+                                    var marker = new kakao.maps.Marker({
+                                        map: map, // 마커 표시할 지도
+                                        title : positions1[i].title,
+                                        position: new kakao.maps.LatLng(positions1[i]['latlng'][0], positions1[i]['latlng'][1]), // 마커를 표시할 위치
+                                        image : markerImage, // 마커 이미지
+                                        clickable : true // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+                                    });
+                                    var infowindow = new kakao.maps.InfoWindow({
+                                        content: positions1[i].title // 인포윈도우에 표시할 내용
+                                    });
+                                    kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+                                    kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+                                }
+                                for (var i = 0; i < positions2.length; i ++) {
+                                    var imageSize = new kakao.maps.Size(40, 60);
+                                    var markerImage = new kakao.maps.MarkerImage(imageSrc2, imageSize);
+                                    var marker = new kakao.maps.Marker({
+                                        map: map, // 마커 표시할 지도
+                                        title : positions2[i].title,
+                                        position: new kakao.maps.LatLng(positions2[i]['latlng'][0], positions2[i]['latlng'][1]), // 마커를 표시할 위치
+                                        image : markerImage, // 마커 이미지
+                                        clickable : true // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+                                    });
+                                    var infowindow = new kakao.maps.InfoWindow({
+                                        content: positions2[i].title // 인포윈도우에 표시할 내용
+                                    });
+                                    kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+                                    kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+                                }
+                                function makeOverListener(map, marker, infowindow) {
+                                    return function() {
+                                        infowindow.open(map, marker);
+                                    };
+                                }
+                                
+                                function makeOutListener(infowindow) {
+                                    return function() {
+                                        infowindow.close();
+                                    };
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                
+        </div>
+        <!-- Contact End -->
+        <!-- Footer Start -->
+        <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+            <div class="container py-3">
+                <div class="row g-5">
+                    <div class="col-lg-6 col-md-6">
+                        <h5 class="text-white mb-4">Team Ohjijo</h5>
+                        <a class="btn btn-link text-white-50" href="https://github.com/hanna-joo"><i class="fab fa-github fa-1x"></i>  [DE] hanna joo</a>
+                        <a class="btn btn-link text-white-50" href="https://github.com/yu-je0ng"><i class="fab fa-github fa-1x"></i>  [DE] yujeong go</a>
+                        <a class="btn btn-link text-white-50" href="https://github.com/edusby"><i class="fab fa-github fa-1x"></i>  [DE] booyong shin</a>
+                        <a class="btn btn-link text-white-50" href="https://github.com/SoyeoAn"><i class="fab fa-github fa-1x"></i>  [DS] soyeon an</a>
+                        <p class="btn btn-link text-white-50" href="https://github.com/ShinGieun"><i class="fab fa-github fa-1x"></i>  [DS] gieun shin</p>
+                        <p class="btn btn-link text-white-50" href="https://github.com/changhwanin"><i class="fab fa-github fa-1x"></i>  [DS] changhwan in</p>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <h5 class="text-white mb-4">Quick Links</h5>
+                        <a class="btn btn-link text-white-50" href="{% url 'index' %}">Home</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'about' %}">About Us</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'ecopoint' %}">Eco Point</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'nolabel' %}">No Label</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'lesswaste' %}">Less Waste</a>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="copyright">
+                    <div class="row">
+                        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                            &copy; <a class="border-bottom" href="#">Ciao label la</a>, All Right Reserved.
+							
+							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+							Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+                        </div>
+                        <div class="col-md-6 text-center text-md-end">
+                            <div class="footer-menu">
+                                <a href="">Home</a>
+                                <a href="">Cookies</a>
+                                <a href="">Help</a>
+                                <a href="">FQAs</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
