@@ -67,6 +67,13 @@ def aboutecopoint(request):
 
 def ecopoint(request):
     if request.method == 'GET':
+            # 로그 수집
+
+            # rs = MEMBER.objects.filter(id=request.session['row_id']).first()
+            # login_logger = logging.getLogger('log')
+            # data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
+            #         'log_tm':str(datetime.now()), 'log_kb': 'ecopoint'}
+            # login_logger.info('menu_log', extra = data)
         try:
             # 로그 수집
             rs = MEMBER.objects.filter(id=request.session['row_id']).first()
@@ -84,18 +91,24 @@ def ecopoint(request):
         if "image" not in request.FILES:
             return redirect(request.url)
         image = request.FILES['image']
-
         # apply image to model
         upload = {'image': image}
-        url = 'http://0.0.0.0:8001/'
+        url = 'http://127.0.0.1:8001/'
         resp = requests.post(url, files=upload)
         result = resp.json() #json 문자열을 파이썬 객체로 변환
-        
+        print(image)
         # ecopoint
         result_list = result['result']
         plastic = 0
         label = 0
-        if result_list:
+        if f"{image}" == request.session.get("eco_img", None)[0] :
+            message = "중복된 이미지 입니다."
+        elif request.session.get("eco_img", None)[1] >= 2 :
+            if request.session.get("eco_img", None)[2] == datetime.now().strftime("%y-%m-%d"):
+                message = "오늘은 더이상 등록하실 수 없습니다 죄송합니다"
+            else : 
+                request.session.get("eco_img",None)[1] = 0
+        elif result_list:
             for i in result_list:
                 if i['name'] == 'plastic' and i['confidence'] >= 0.5:
                     plastic += 1
@@ -107,17 +120,20 @@ def ecopoint(request):
                 if label >= 1:
                     message = f"{label} 개의 불순물이 감지되었습니다. \n깨끗하게 씻어서 분리수거 해주세요!"
                 else:
+                    count = request.session.get("eco_img", 0)[1]
                     ecopoint = plastic
                     total_ecopoint = ecopoint*10
                     message = f'{plastic} 개를 깨끗하게 분리수거하셨네요! \n덕분에 지구가 시원해졌어요! \n{total_ecopoint} ECO POINT 가 적립되었습니다!'
+                    day_count = count + 1
                     # 에코 포인트 적립
                         # "ECOPOINT.user_nb" must be a "MEMBER" instance.
                     ECOPOINT.objects.create(
                         user_nb=MEMBER.objects.get(id=request.session['row_id']), save_tm = datetime.now(), point_amt=total_ecopoint
                     )
+                    request.session['eco_img'] = [f"{image}", day_count, datetime.now().strftime("%y-%m-%d")]
+                    print(request.session['eco_img'])
         else:
             message = '다른 사진을 선택해 주세요.'
-        # print(message)
         return JsonResponse({'msg': message})
 
 
