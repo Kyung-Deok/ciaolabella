@@ -78,7 +78,7 @@ def member_page(request):
 #회원 가입
 def member_reg(request):
     if request.method == "GET":
-        if request.session.get("row_id", None) == None :
+        if request.session.get("row_id", None) is not None :
             return redirect("index")
         return render(request, 'member/register.html')
 
