@@ -11,11 +11,11 @@ def index(request): # main
 
     try :
         # 회원 로그 수집
-        rs = MEMBER.objects.filter(id=request.session['row_id']).first()
-        login_logger = logging.getLogger('log')
-        data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
-                'log_tm':str(datetime.now()), 'log_kb': 'main'}
-        login_logger.info('menu_log', extra = data)
+        # rs = MEMBER.objects.filter(id=request.session['row_id']).first()
+        # login_logger = logging.getLogger('log')
+        # data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
+        #         'log_tm':str(datetime.now()), 'log_kb': 'main'}
+        # login_logger.info('menu_log', extra = data)
 
         return render(request, 'ciaolabella/index.html')
 
@@ -36,11 +36,11 @@ def index(request): # main
 def about(request):
     try :
         # 회원 로그 수집
-        rs = MEMBER.objects.filter(id=request.session['row_id']).first()
-        login_logger = logging.getLogger('log')
-        data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
-                'log_tm':str(datetime.now()), 'log_kb': 'about'}
-        login_logger.info('menu_log', extra = data)
+        # rs = MEMBER.objects.filter(id=request.session['row_id']).first()
+        # login_logger = logging.getLogger('log')
+        # data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
+        #         'log_tm':str(datetime.now()), 'log_kb': 'about'}
+        # login_logger.info('menu_log', extra = data)
 
         return render(request, 'ciaolabella/about.html')
 
@@ -53,11 +53,11 @@ def aboutecopoint(request):
     if request.method == 'GET':
         try:
             # 로그 수집
-            rs = MEMBER.objects.filter(id=request.session['row_id']).first()
-            login_logger = logging.getLogger('log')
-            data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
-                    'log_tm':str(datetime.now()), 'log_kb': 'aboutecopoint'}
-            login_logger.info('menu_log', extra = data)
+            # rs = MEMBER.objects.filter(id=request.session['row_id']).first()
+            # login_logger = logging.getLogger('log')
+            # data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
+            #         'log_tm':str(datetime.now()), 'log_kb': 'aboutecopoint'}
+            # login_logger.info('menu_log', extra = data)
             return render(request, 'ecopointapp/aboutecopoint.html')
         except KeyError:
             context = {}
@@ -75,12 +75,12 @@ def ecopoint(request):
             #         'log_tm':str(datetime.now()), 'log_kb': 'ecopoint'}
             # login_logger.info('menu_log', extra = data)
         try:
-            # 로그 수집
-            rs = MEMBER.objects.filter(id=request.session['row_id']).first()
-            login_logger = logging.getLogger('log')
-            data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
-                    'log_tm':str(datetime.now()), 'log_kb': 'ecopoint'}
-            login_logger.info('menu_log', extra = data)
+            # # 로그 수집
+            # rs = MEMBER.objects.filter(id=request.session['row_id']).first()
+            # login_logger = logging.getLogger('log')
+            # data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
+            #         'log_tm':str(datetime.now()), 'log_kb': 'ecopoint'}
+            # login_logger.info('menu_log', extra = data)
             return render(request, 'ecopointapp/ecopoint.html')
         except KeyError:
             context = {}
@@ -141,11 +141,11 @@ def ecopoint2(request):
     if request.method == 'GET':
         try:
             # 로그 수집
-            rs = MEMBER.objects.filter(id=request.session['row_id']).first()
-            login_logger = logging.getLogger('log')
-            data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
-                    'log_tm':str(datetime.now()), 'log_kb': 'ecopoint2'}
-            login_logger.info('menu_log', extra = data)
+            # rs = MEMBER.objects.filter(id=request.session['row_id']).first()
+            # login_logger = logging.getLogger('log')
+            # data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
+            #         'log_tm':str(datetime.now()), 'log_kb': 'ecopoint2'}
+            # login_logger.info('menu_log', extra = data)
             return render(request, 'ecopointapp/ecopoint2.html')
         except KeyError:
             context = {}
