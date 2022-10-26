@@ -17,11 +17,11 @@ def search(request):
     if request.method == 'GET':
         try:
             # 로그 수집
-            rs = MEMBER.objects.filter(id=request.session['row_id']).first()
-            login_logger = logging.getLogger('log')
-            data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
-                    'log_tm':str(datetime.now()), 'log_kb': 'nolabel'}
-            login_logger.info('menu_log', extra = data)
+            # rs = MEMBER.objects.filter(id=request.session['row_id']).first()
+            # login_logger = logging.getLogger('log')
+            # data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
+            #         'log_tm':str(datetime.now()), 'log_kb': 'nolabel'}
+            # login_logger.info('menu_log', extra = data)
             return render(request, 'nolabelapp/nolabel.html')
         except KeyError:
             context = {}
