@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 from django.db.models import Sum
 from . import ecograph
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 
 
 def member_page(request):
@@ -92,7 +92,7 @@ def member_reg(request):
         email_txt = request.POST.get("email_txt", False)
         phone_nb = request.POST.get("phone_nb", False)
         region_kb = request.POST.get("region_kb", False)
-        birth_nb = request.POST.get("birth_nb", False)
+        age_nb = request.POST.get("age_nb", False)
         gender_kb = request.POST.get("gender_kb", False)
 
         # 회원가입 중복체크
@@ -100,18 +100,14 @@ def member_reg(request):
 
         if rs.exists():
             context['message'] = user_id + "가 중복됩니다."
-            context['id_check'] = 0
-            return JsonResponse(context)
-            #return render(request, 'member/register.html', context)
+            return render(request, 'member/register.html', context)
         # elif 비밀번호 != 비밀번호 재입력 : 비밀번호 다시 확인해달라는 창
         else:
             MEMBER.objects.create(
-                user_id=user_id, user_pw=user_pw, user_nm=user_nm, email_txt=email_txt, phone_nb=phone_nb, region_kb=region_kb, birth_nb=birth_nb, gender_kb=gender_kb,
+                user_id=user_id, user_pw=user_pw, user_nm=user_nm, email_txt=email_txt, phone_nb=phone_nb, region_kb=region_kb, age_nb=age_nb, gender_kb=gender_kb,
                 reg_date=datetime.now())
             context['message'] = user_id + "님 회원가입 되었습니다."
-            context['id_check'] = 1
-            return JsonResponse(context)
-            #return render(request, 'ciaolabella/index.html', context)
+            return render(request, 'ciaolabella/index.html', context)
 
 
 def member_login(request):
@@ -142,10 +138,10 @@ def member_login(request):
 
 
             # 로그인 로그 수집
-            # login_logger = logging.getLogger('log')
-            # data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
-            #         'log_tm':str(datetime.now()), 'log_kb': 'login' }
-            # login_logger.info('login_log', extra = data)
+            login_logger = logging.getLogger('log')
+            data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
+                    'log_tm':str(datetime.now()), 'log_kb': 'login' }
+            login_logger.info('login_log', extra = data)
 
             return render(request, 'ciaolabella/index.html', context)
 
