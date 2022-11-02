@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+import logging.config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -101,6 +102,75 @@ LOGGING = {
     }
 }
 '''
+LOGGING_CONFIG = None
+
+CUSTOM_LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'stream': {
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'stream'
+        },
+
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs/member.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'stream',
+        },
+
+        'kafka': {
+            'level': 'INFO',
+            'class': 'ciaolabella.handlers.KafkaHandler',
+            'host': '218.154.53.236',
+            'port': '9092',
+            'message_type': 'kafka',
+        },
+    },
+
+    'loggers': {
+        'ciaolabella.UserInOut': {
+            'handlers': ['console', 'file', 'kafka'],
+            'level': 'INFO',
+            'propagate': False,
+        }
+    }
+}
+
+logging.config.dictConfig(CUSTOM_LOGGING)
+
+'''
+        'kh': {
+            'level': 'INFO',
+            'class': 'jefka.KafkaHandler',
+            'host': '218.154.53.236',
+            'port': '9092',
+            'message_type': 'kafka',
+        },
+'''
+
+
+'''
+        'kh': {
+            'level': 'INFO',
+            'class': 'ciaolabella.handlers.KafkaHandler',
+            'broker': '218.154.53.236:9092',
+        },
+'''
+
+
+
 
 
 MIDDLEWARE = [
