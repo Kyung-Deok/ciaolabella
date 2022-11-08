@@ -131,7 +131,7 @@
                         <a href="{% url 'lesswaste' %}" class="nav-item nav-link">LESS WASTE</a>
                     </div>
                     <div class="navbar-nav ms-auto">
-                        {% if not 'row_id' in request.session %}
+                        {% if not 'member_id' in request.session %}
                             <a href="{% url 'member_reg' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;" >SINGUP</a><br>
                             <a href="{% url 'member_login' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;" >SINGIN</a>
                         {% else %}

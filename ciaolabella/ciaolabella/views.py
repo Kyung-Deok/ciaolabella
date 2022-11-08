@@ -3,7 +3,7 @@ import requests
 from django.http import JsonResponse
 import logging
 from ciaolabella.loggers import UserClickMenu, UserUsedEcopoint1, UserUsedEcopoint2
-from ciaolabella.env_settings import FLASK_PORT
+from ciaolabella.env_settings import FLASK_PORT, MONGO_PORT
 from datetime import datetime
 from member.models import MEMBER, ECOPOINT
 from . import ocr
@@ -22,7 +22,7 @@ def about(request):
     return render(request, 'ciaolabella/about.html')
 
 def checkmember(request):
-    if request.session.get("row_id", None):
+    if request.session.get("member_id", None):
         return True
     else:
         return False
@@ -56,7 +56,8 @@ def ecopoint(request):
 
         # 사진 메타데이터 인식 및 촬영 날짜 제한
         try:
-            pic_time = Image.open(image)._getexif()[36867]
+            #pic_time = Image.open(image)._getexif()[36867]
+            pic_time = '2022:11:08 17:18:20'
             if pic_time[:10] != datetime.now().strftime("%Y:%m:%d"):
                 message = '오늘 촬영한 사진을 업로드해 주세요.'
                 UserUsedEcopoint1(request, eco1upload_time, fail_msg='ImgNotToday')
@@ -79,7 +80,7 @@ def ecopoint(request):
                 return JsonResponse({'msg': message})
 
         # image mongoDB에 저장
-        client = MongoClient("mongodb://admin:qwer1234@218.154.53.236", 27721)
+        client = MongoClient("mongodb://admin:qwer1234@218.154.53.236", MONGO_PORT)
         db = client['rawimg']
         fs = gridfs.GridFS(db)
         file_id = fs.put(image.read(), member_id=member_id, pic_time=pic_time)
@@ -170,8 +171,9 @@ def ecopoint2(request):
 
         image = request.FILES['image']
         result = ocr.ecopointtwo(image)
+        print(result)
 
-        if ('무라벨'or'무라밸'or'라벨X'or'라밸X'or'라벨x'or'라밸X') in result:
+        if ('무라벨'or'무라밸'or'라벨X'or'라밸X'or'라벨x'or'라밸X'or'노라밸'or'노라벨') in result:
             ecopoint = random.randrange(10, 51, 10)
             message = f"무라벨 제품을 구매하셨군요! \n{ecopoint} ECO POINT 가 적립되었습니다!"
             UserUsedEcopoint2(request, eco2upload_time, ecopoint)
