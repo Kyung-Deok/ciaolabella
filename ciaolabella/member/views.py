@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
+from django.http import JsonResponse
 from .models import MEMBER, ECOPOINT
-import logging
+from ciaolabella.loggers import UserLogin, UserLogout
 from datetime import datetime
+import sched
+import time
 from django.db.models import Sum
 from . import ecograph
 
@@ -11,8 +12,7 @@ from . import ecograph
 def member_page(request):
 
     context={}
-
-    mem = request.session['row_id']
+    mem = request.session['user_id']
 
     # 회원정보
     rs = MEMBER.objects.filter(id=mem).first()
@@ -103,7 +103,7 @@ def member_reg(request):
         # elif 비밀번호 != 비밀번호 재입력 : 비밀번호 다시 확인해달라는 창
         else:
             MEMBER.objects.create(
-                user_id=user_id, user_pw=user_pw, user_nm=user_nm, email_txt=email_txt, phone_nb=phone_nb, region_kb=region_kb, age_nb=age_nb, gender_kb=gender_kb,
+                user_id=user_id, user_pw=user_pw, user_nm=user_nm, email_txt=email_txt, phone_nb=phone_nb, region_kb=region_kb, birth_nb=age_nb, gender_kb=gender_kb,
                 reg_date=datetime.now())
             context['message'] = user_id + "님 회원가입 되었습니다."
             return render(request, 'ciaolabella/index.html', context)
@@ -111,7 +111,7 @@ def member_reg(request):
 
 def member_login(request):
     if request.method == "GET":
-        if request.session.get("row_id", None) is not None : 
+        if request.session.get("user_id", None) is not None :
             return redirect("index")
         return render(request, 'member/login.html')
 
@@ -123,24 +123,23 @@ def member_login(request):
 
         # 로그인 체크하기
         rs = MEMBER.objects.filter(user_id=user_id, user_pw=user_pw).first()
-
         # if rs.exists():
+
         if rs is not None:
 
             # OK - 로그인
             request.session['row_id'] = rs.id
-                # request.session['user_nm'] = rs.user_nm
+            request.session['user_gender'] = rs.gender_kb
+            user_age = int(datetime.today().year) - int(rs.birth_nb[:4]) + 1
+            request.session['user_age'] = user_age
+            request.session['user_region'] = rs.region_kb
+            request.session['login_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            request.session['_session_init_timestamp_'] = time.time()
+            UserLogin(request)
 
             context['user_id'] = rs.user_id
             context['user_nm'] = rs.user_nm
             context['message'] = rs.user_nm + "님이 로그인하셨습니다."
-
-
-            # 로그인 로그 수집
-            login_logger = logging.getLogger('log')
-            data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
-                    'log_tm':str(datetime.now()), 'log_kb': 'login' }
-            login_logger.info('login_log', extra = data)
 
             return render(request, 'ciaolabella/index.html', context)
 
@@ -148,7 +147,24 @@ def member_login(request):
             context['message'] = "로그인 정보가 맞지않습니다.\\n\\n 확인하신 후 다시 시도해 주십시오."
             return render(request, 'member/login.html', context)
 
-
 def member_logout(request):
+    logout_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    UserLogout(request, 'ButtonClicked', logout_time)
     request.session.flush()
     return redirect('index')
+
+def member_logout2(request):
+    logout_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if request.session.get('row_id', None):
+        UserLogout(request, 'BrowserClosed', logout_time)
+        request.session.flush()
+    return JsonResponse({'msg': 'success'})
+
+'''
+def member_logout3(request):
+    logout_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if request.session.get('row_id', None):
+        UserLogout(request, 'SessionExpired', logout_time)
+        request.session.flush()
+    return redirect('index')
+'''
