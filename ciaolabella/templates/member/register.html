@@ -94,8 +94,9 @@
                         <small id="PONE_NBHelp" class="form-text text-muted">We'll never share your phone number with anyone else.</small>
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputAGE_NB" class="form-label mt-4">Age</label>
-                        <input name="age_nb" type="number" class="form-control" id="exampleInputAGE_NB" aria-describedby="AGE_NBHelp" placeholder="Enter your age">
+                        <label for="exampleInputBIRTH_DT" class="form-label mt-4">Birthday</label>
+                        <input name="birth_dt" type="date" class="form-control" id="exampleInputBIRTH_DT" aria-describedby="BIRTH_DTHelp" placeholder="Enter your birthday">
+                        <small id="BIRTH_DTHelp" class="form-text text-muted">We'll never share your birthday with anyone else.</small>
                     </div>
                     
 
@@ -151,31 +152,71 @@
 
 
 
-                    <script>
-                    function memReg() {
-                        var form = document.f1;
-                        if (form.user_id.value=="") {
-                            alert("아이디를 입력해 주십시오.");
-                            form.user_id.focus();
-                            return;
+                   <script>
+                        function memReg() {
+                            var form = document.f1;
+                            if (form.user_id.value=="") {
+                                alert("아이디를 입력해 주십시오.");
+                                form.user_id.focus();
+                                return;
+                            }
+                            if (form.user_pw.value=="") {
+                                alert("비밀번호를 입력해 주십시오.");
+                                form.user_pw.focus();
+                                return;
+                            }
+                            if (form.user_nm.value=="") {
+                                alert("이름을 입력해 주십시오.");
+                                form.user_nm.focus();
+                                return;
+                            }
+                            if (form.email_txt.value=="") {
+                                alert("이메일을 입력해 주십시오.");
+                                form.email_txt.focus();
+                                return;
+                            }
+                            if (form.phone_nb.value=="") {
+                                alert("전화번호를 입력해 주십시오.");
+                                form.phone_nb.focus();
+                                return;
+                            }
+                            if (form.birth_dt.value=="") {
+                                alert("생년월일을 입력해 주십시오.");
+                                form.birth_dt.focus();
+                                return;
+                            }
+
+                            $.ajax({
+                                url: '/member/register/',
+                                method: "post",
+                                async: true,
+                                data: {
+                                    'user_nm': form.user_nm.value,
+                                    'user_id': form.user_id.value,
+                                    'user_pw': form.user_pw.value,
+                                    'email_txt': form.email_txt.value,
+                                    'phone_nb': form.phone_nb.value,
+                                    'region_kb': form.region_kb.value,
+                                    'birth_dt': form.birth_dt.value,
+                                    'gender_kb': form.gender_kb.value
+                                },
+                                dataType: "json",
+                                success: function (context) {
+                                    alert(context.message);
+                                    var id_check = context.id_check;
+                                    if (id_check == 0) {
+                                        form.user_id.focus();
+                                        window.scrollTo(0, 0);
+                                    } else {
+                                        document.location = '/';
+                                    }
+                                },
+                                error : function() {
+                                    alert('통신이 실패하였습니다');
+                                }
+                            })
                         }
-                        if (form.user_pw.value=="") {
-                            alert("비밀번호를 입력해 주십시오.");
-                            form.user_pw.focus();
-                            return;
-                        }
-                        if (form.user_nm.value=="") {
-                            alert("이름을 입력해 주십시오.");
-                            form.user_nm.focus();
-                            return;
-                        }
-                        form.action = "/member/register/";
-                        form.submit();
-                    }
                     </script>
-                    {% if message %}
-                    <script>alert('{{ message }}');</script>
-                    {% endif %}
 
 					<div class="flex-col-c p-t-170 p-b-40">
 						<span class="txt1 p-b-9">
@@ -218,9 +259,6 @@
 	<script src="{% static '/member_static/vendor/countdowntime/countdowntime.js'%}"></script>
 <!--===============================================================================================-->
 	<script src="{% static '/member_static/js/main.js'%}"></script>
-    <script src="{% static 'js/logout.js' %}"></script>
-
 </body>
-
 </html>
 

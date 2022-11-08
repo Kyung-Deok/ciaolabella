@@ -1,17 +1,15 @@
 from django.shortcuts import render
 from pymongo import MongoClient
-import pandas as pd
 from datetime import datetime
-from member.models import MEMBER
 from ciaolabella.loggers import UserClickMenu, UserSearchLesswaste
-import json
+from ciaolabella.env_settings import MONGO_URL, MONGO_PORT
 
 def km_to_mile(km):
     mile = km * 0.621371
     return float(mile)
 
 def get_points(collection, coords, distance):
-    client = MongoClient("mongodb://127.0.0.1", 27017)
+    client = MongoClient(MONGO_URL, MONGO_PORT)
     db = client['multi_pjt3']
     coll = db[collection]
     dist = km_to_mile(distance) / 3963.2
@@ -28,7 +26,6 @@ def get_points(collection, coords, distance):
         data['title'] = doc['name']
         data['latlng'] = [doc['location']['coordinates'][1], doc['location']['coordinates'][0]]
         collection_list.append(data)
-
     return collection_list
 
 def map(request):

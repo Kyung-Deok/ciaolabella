@@ -7,25 +7,25 @@ import sched
 import time
 from django.db.models import Sum
 from . import ecograph
+from django.http import JsonResponse
 
 
 def member_page(request):
 
     context={}
-    mem = request.session['user_id']
+    member_id = request.session['member_id']
 
     # 회원정보
-    rs = MEMBER.objects.filter(id=mem).first()
+    rs = MEMBER.objects.filter(member_id=member_id).first()
     context['member'] = rs
 
     # 회원 포인트 정보 - 내림차순
-    point = ECOPOINT.objects.filter(user_nb=mem).order_by("-save_tm")[:9]
-    point_sum = ECOPOINT.objects.filter(user_nb=mem)
+    point = ECOPOINT.objects.filter(member_id=member_id)
     context['point'] = point
 
     # 총 포인트
     # {'point_amt__sum': 70 }
-    total = point_sum.aggregate(Sum('point_amt'))['point_amt__sum']
+    total = point.aggregate(Sum('point_amt'))['point_amt__sum']
     context['total'] = total
 
     # 에코 등급
@@ -69,7 +69,7 @@ def member_page(request):
         
     # 기간별 에코포인트
     try:
-        context['graph'] = ecograph.ecopoint(mem)
+        context['graph'] = ecograph.ecopoint(member_id)
     except:
         context['graph'] = None
 
@@ -78,7 +78,7 @@ def member_page(request):
 #회원 가입
 def member_reg(request):
     if request.method == "GET":
-        if request.session.get("row_id", None) is not None :
+        if request.session.get("member_id", None) is not None :
             return redirect("index")
         return render(request, 'member/register.html')
 
@@ -91,7 +91,7 @@ def member_reg(request):
         email_txt = request.POST.get("email_txt", False)
         phone_nb = request.POST.get("phone_nb", False)
         region_kb = request.POST.get("region_kb", False)
-        age_nb = request.POST.get("age_nb", False)
+        birth_dt = request.POST.get("birth_dt", False)
         gender_kb = request.POST.get("gender_kb", False)
 
         # 회원가입 중복체크
@@ -99,19 +99,24 @@ def member_reg(request):
 
         if rs.exists():
             context['message'] = user_id + "가 중복됩니다."
-            return render(request, 'member/register.html', context)
+            context['id_check'] = 0
+            return JsonResponse(context)
+            #return render(request, 'member/register.html', context)
         # elif 비밀번호 != 비밀번호 재입력 : 비밀번호 다시 확인해달라는 창
         else:
             MEMBER.objects.create(
-                user_id=user_id, user_pw=user_pw, user_nm=user_nm, email_txt=email_txt, phone_nb=phone_nb, region_kb=region_kb, birth_nb=age_nb, gender_kb=gender_kb,
-                reg_date=datetime.now())
+                user_id=user_id, user_pw=user_pw, user_nm=user_nm, email_txt=email_txt,
+                phone_nb=phone_nb, region_kb=region_kb, birth_dt=birth_dt, gender_kb=gender_kb,
+                register_dt=datetime.now().strftime('%Y-%m-%d'))
             context['message'] = user_id + "님 회원가입 되었습니다."
-            return render(request, 'ciaolabella/index.html', context)
+            context['id_check'] = 1
+            return JsonResponse(context)
+            #return render(request, 'ciaolabella/index.html', context)
 
 
 def member_login(request):
     if request.method == "GET":
-        if request.session.get("user_id", None) is not None :
+        if request.session.get("member_id", None) is not None :
             return redirect("index")
         return render(request, 'member/login.html')
 
@@ -128,14 +133,14 @@ def member_login(request):
         if rs is not None:
 
             # OK - 로그인
-            request.session['row_id'] = rs.id
+            request.session['member_id'] = rs.member_id
             request.session['user_gender'] = rs.gender_kb
-            user_age = int(datetime.today().year) - int(rs.birth_nb[:4]) + 1
+            user_age = int(datetime.today().year) - int(rs.birth_dt[:4]) + 1
             request.session['user_age'] = user_age
             request.session['user_region'] = rs.region_kb
-            request.session['login_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             request.session['_session_init_timestamp_'] = time.time()
-            UserLogin(request)
+            login_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            UserLogin(request, login_time)
 
             context['user_id'] = rs.user_id
             context['user_nm'] = rs.user_nm
@@ -159,12 +164,3 @@ def member_logout2(request):
         UserLogout(request, 'BrowserClosed', logout_time)
         request.session.flush()
     return JsonResponse({'msg': 'success'})
-
-'''
-def member_logout3(request):
-    logout_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    if request.session.get('row_id', None):
-        UserLogout(request, 'SessionExpired', logout_time)
-        request.session.flush()
-    return redirect('index')
-'''

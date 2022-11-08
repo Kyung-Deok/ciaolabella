@@ -86,12 +86,13 @@
 		            contentType: false,
                 	dataType: "json",
                 	success: function(data){
-                        // 결과 사진 가져오기.
-                        //$("#outputfile").attr("src" , "{% static '/ecopoint_static/img_output/ecopoint1/image0.jpg'%}");
-                        $("#result").html("");
-                        $("#result").append(`<div class="about-img position-relative overflow-hidden p-5 pe-0" id="result1">
-                                        <img class="img-fluid w-100" src="{% static '/ecopoint_static/img_output/ecopoint1/image0.jpg' %}" id="outputfile">
+                        var img = data['decode_img'];
+                        if (img){
+                            $("#result").html("");
+                            $("#result").append(`<div class="about-img position-relative overflow-hidden p-5 pe-0" id="result1">
+                                        <img class="img-fluid w-100" src="data:image/jpg;base64, ${img}" id="outputfile">
                                         </div>`);
+                        }
                         Swal.fire({
                             icon: 'info', 
                             text: data['msg'].replace(/\n/ig, '\n')
@@ -167,7 +168,7 @@
                         <a href="{% url 'lesswaste' %}" class="nav-item nav-link">LESS WASTE</a>
                     </div>
                     <div class="navbar-nav ms-auto">
-                        {% if not 'row_id' in request.session %}
+                        {% if not 'member_id' in request.session %}
                             <a href="{% url 'member_reg' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;" >SIGNUP</a><br>
                             <a href="{% url 'member_login' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;" >SIGNIN</a>
                         {% else %}
@@ -210,11 +211,11 @@
                     </div>
                     <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
                         <h2 class="mb-4">안내사항</h2>
-                        <p class="display-7"><i class="fa fa-check text-primary me-3"></i>[파일 선택] 버튼을 클릭하여 분리수거 인증사진을 가져오세요.</p>
+                        <p class="display-7"><i class="fa fa-check text-primary me-3"></i>[파일 선택] 버튼을 클릭하여 오늘 촬영한 분리수거 인증사진을 가져오세요.</p>
                         <p class="display-7"><i class="fa fa-check text-primary me-3"></i>모바일인 경우 카메라로 바로 사진을 찍을 수 있습니다.</p>
                         <p class="display-7"><i class="fa fa-check text-primary me-3"></i>[사진 업로드] 버튼을 클릭하세요.</p>
                         <p class="display-7"><i class="fa fa-check text-primary me-3"></i>라벨이 제거되었다면 ECOPOINT가 적립됩니다!</p>
-                        <p class="display-7"><i class="fa fa-check text-primary me-3"></i>라벨을 제거하기 귀찮다면 무라벨 제품을 구매해보세요!</p>
+                        <p class="display-7"><i class="fa fa-check text-primary me-3"></i>하루 2회까지 에코포인트를 적립할 수 있습니다.</p>
                         <div class="d-grid gap-2 col-12">
                             <input type="file" name="image" class="form-control-file btn btn-primary py-3 px-4 me-2 display-7" id="inputfile">
                             <button class="btn btn-primary py-3 px-4 me-2 display-7" id="upload_btn"><i class="fas fa-upload"></i>  사진 업로드</button>
