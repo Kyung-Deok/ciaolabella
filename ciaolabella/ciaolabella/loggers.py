@@ -1,15 +1,14 @@
 import logging
 from pprint import pprint
 from datetime import datetime
-from .handlers import KafkaHandler
+
 '''
  logger 별 이벤트
-- userlog.duration : UserLogin, UserLogout
+- userlog.inout : UserLogin, UserLogout
 - userlog.menuclick : UserClickMenu
 - userlog.ecopoint : UserUsedEcopoint1, UserUsedEcopoint2
 - userlog.nolabel : UserSearchProduct, UserClickProduct
 - userlog.lesswaste : UserSearchLesswaste
-
 '''
 def UserInfo(request):
     user_id = request.session.get("row_id", "none")
@@ -21,7 +20,7 @@ def UserInfo(request):
 def UserLogin(request):
     user_info = UserInfo(request)
     data = {
-            'topic' : 'duration_test',
+            'topic' : 'inout_test',
             'key':'login',
             'user_id': user_info[0],
             'user_gender': user_info[1],
@@ -29,13 +28,13 @@ def UserLogin(request):
             'user_region': user_info[3],
             'login_time': request.session.get("login_time")
     }
-    logger = logging.getLogger('userlog.duration')
+    logger = logging.getLogger('userlog.inout')
     logger.info('UserLogin', extra=data)
 
 def UserLogout(request, logout_method, logout_time):
     user_info = UserInfo(request)
     data = {
-            'topic': 'duration_test',
+            'topic': 'inout_test',
             'key': 'logout',
             'user_id': user_info[0],
             'user_gender': user_info[1],
@@ -44,14 +43,14 @@ def UserLogout(request, logout_method, logout_time):
             'logout_method': logout_method,
             'logout_time': logout_time
     }
-    logger = logging.getLogger('userlog.duration')
+    logger = logging.getLogger('userlog.inout')
     logger.info('UserLogout', extra=data)
 
 def UserClickMenu(request, selected_menu, menuclick_time):
     user_info = UserInfo(request)
     data = {
             'topic': 'menuclick_test',
-            'key': 'click',
+            'key': 'menuclick',
             'user_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],
@@ -131,7 +130,7 @@ def UserSearchLesswaste(request, radius_km, searchclick_location, searchclick_ti
     user_info = UserInfo(request)
     data = {
             'topic': 'lesswaste_test',
-            'key': '1',
+            'key': 'lesswaste',
             'user_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],
