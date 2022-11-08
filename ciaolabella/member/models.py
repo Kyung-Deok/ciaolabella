@@ -9,9 +9,9 @@ from django.db import models
 
 
 class ECOPOINT(models.Model):
-    row_id = models.BigAutoField(primary_key=True)
-    user_nb = models.BigIntegerField()
-    save_tm = models.DateTimeField()
+    ecopoint_id = models.BigAutoField(primary_key=True)
+    member_id = models.BigIntegerField()
+    month_kb = models.CharField(max_length=7)
     point_amt = models.BigIntegerField()
 
     class Meta:
@@ -20,16 +20,16 @@ class ECOPOINT(models.Model):
 
 
 class MEMBER(models.Model):
-    id = models.BigAutoField(primary_key=True)
+    member_id = models.BigAutoField(primary_key=True)
     user_id = models.CharField(max_length=100)
     user_pw = models.CharField(max_length=100)
     user_nm = models.CharField(max_length=50)
-    birth_nb = models.CharField(max_length=20)
-    gender_kb = models.CharField(max_length=20)
+    birth_dt = models.CharField(max_length=10)
+    gender_kb = models.CharField(max_length=1)
     email_txt = models.CharField(max_length=150)
     phone_nb = models.CharField(max_length=150)
     region_kb = models.CharField(max_length=100)
-    reg_date = models.DateTimeField()
+    register_dt = models.CharField(max_length=10)
 
     class Meta:
         managed = False

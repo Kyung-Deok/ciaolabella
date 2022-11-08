@@ -11,18 +11,18 @@ from datetime import datetime
 - userlog.lesswaste : UserSearchLesswaste
 '''
 def UserInfo(request):
-    user_id = request.session.get("row_id", "none")
+    member_id = request.session.get("member_id", "none")
     user_gender = request.session.get("user_gender", "none")
     user_age = request.session.get("user_age", "none")
     user_region = request.session.get("user_region", "none")
-    return user_id, user_gender, user_age, user_region
+    return member_id, user_gender, user_age, user_region
 
 def UserLogin(request, login_time):
     user_info = UserInfo(request)
     data = {
-            'topic' : 'inout_test',
+            'topic' : 'log_inout',
             'key':'login',
-            'user_id': user_info[0],
+            'member_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],
             'user_region': user_info[3],
@@ -34,9 +34,9 @@ def UserLogin(request, login_time):
 def UserLogout(request, logout_method, logout_time):
     user_info = UserInfo(request)
     data = {
-            'topic': 'inout_test',
+            'topic': 'log_inout',
             'key': 'logout',
-            'user_id': user_info[0],
+            'member_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],
             'user_region': user_info[3],
@@ -49,9 +49,9 @@ def UserLogout(request, logout_method, logout_time):
 def UserClickMenu(request, selected_menu, menuclick_time):
     user_info = UserInfo(request)
     data = {
-            'topic': 'menuclick_test',
+            'topic': 'log_menuclick',
             'key': 'menuclick',
-            'user_id': user_info[0],
+            'member_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],
             'user_region': user_info[3],
@@ -65,9 +65,9 @@ def UserClickMenu(request, selected_menu, menuclick_time):
 def UserUsedEcopoint1(request, eco1upload_time, save_point=0, photo_id='', fail_msg=''):
     user_info = UserInfo(request)
     data = {
-            'topic': 'ecopoint_test',
+            'topic': 'log_ecopoint',
             'key': '1',
-            'user_id': user_info[0],
+            'member_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],
             'user_region': user_info[3],
@@ -82,9 +82,9 @@ def UserUsedEcopoint1(request, eco1upload_time, save_point=0, photo_id='', fail_
 def UserUsedEcopoint2(request, eco2upload_time, save_point=0, fail_msg=''):
     user_info = UserInfo(request)
     data = {
-            'topic': 'ecopoint_test',
+            'topic': 'log_ecopoint',
             'key': '2',
-            'user_id': user_info[0],
+            'member_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],
             'user_region': user_info[3],
@@ -98,9 +98,9 @@ def UserUsedEcopoint2(request, eco2upload_time, save_point=0, fail_msg=''):
 def UserSearchProduct(request, search_word, searchclick_time):
     user_info = UserInfo(request)
     data = {
-            'topic': 'nolabel_test',
+            'topic': 'log_nolabel',
             'key': 'search',
-            'user_id': user_info[0],
+            'member_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],
             'user_region': user_info[3],
@@ -113,9 +113,9 @@ def UserSearchProduct(request, search_word, searchclick_time):
 def UserClickProduct(request, product_name, product_volume, product_unitprice, productclick_time):
     user_info = UserInfo(request)
     data = {
-            'topic': 'nolabel_test',
+            'topic': 'log_nolabel',
             'key': 'cilck',
-            'user_id': user_info[0],
+            'member_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],
             'user_region': user_info[3],
@@ -130,9 +130,9 @@ def UserClickProduct(request, product_name, product_volume, product_unitprice, p
 def UserSearchLesswaste(request, radius_km, searchclick_location, searchclick_time):
     user_info = UserInfo(request)
     data = {
-            'topic': 'lesswaste_test',
+            'topic': 'log_lesswaste',
             'key': 'lesswaste',
-            'user_id': user_info[0],
+            'member_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],
             'user_region': user_info[3],
