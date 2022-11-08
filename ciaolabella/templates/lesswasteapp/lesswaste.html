@@ -46,6 +46,11 @@
         @media (min-width: 1200px){
             .display-7{font-size:1.25rem}
         }
+        input[type="range"] {
+            overflow: hidden;
+            width: 30%;
+            background: transparent;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
@@ -133,21 +138,30 @@
         <!-- Contact Start -->
         <div class="container-xxl py-3">
             <div class="container">
-                <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-                    <h1 class="mb-3">내 주변 서비스</h1>
-                    <p class="display-7">반경 10km 이내의 레스웨이스트 서비스를 이용해 보세요!</p>
-                </div>
-                <div class="row g-5 justify-content-md-center">
-                    <div class="col-md-12">
-                        <form id="my_search" action="{% url 'lesswaste' %}" method="post" class="btn btn-primary border-0 w-100 py-3">{% csrf_token %}
+                <div class="row g-3 justify-content-md-center">
+                    <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s">
+                        <h1 class="mb-3">내 주변 서비스</h1>
+                        <p class="display-7">원하는 반경을 선택하여 내 주변의 레스웨이스트 서비스를 이용해 보세요!</p>
+                    </div>
+                    <div class="col-md-12 wow fadeInUp" data-wow-delay="0.2s">
+                        <form id="my_search" action="{% url 'lesswaste' %}" method="post">{% csrf_token %}
                             <input id="userLat" type="hidden" name="userLat">
                             <input id="userLng" type="hidden" name="userLng">
+                            <div class="btn border-0 w-100 py-1">
+                                <input class="current_dist" type="range" min="1" max="20" name="radius" value="10" id="dist-in">
+                                <span id="dist-out"></span>
+                            </div>
+                            <script>
+                                document.querySelector('#dist-in').addEventListener('input',e=>{
+                                document.querySelector('#dist-out').innerHTML= e.target.value + 'km';
+                                });
+                            </script>
                             <input type="submit" value="SEARCH BY MY LOCATION!" class="display-7 btn btn-primary border-0 w-100 py-3">
                         </form>
                     </div>
                 </div>
                 <div class="row h-100 g-10">
-                    <div class="col-md-12 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-md-12 wow fadeInUp" data-wow-delay="0.3s">
                         <div id="map" style="width:100%;height:40rem;"></div>
                             <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=eca8d2b40ead4033a0ca459ace5da008"></script>
                             <script>
@@ -273,6 +287,7 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/logout.js' %}"></script>
 </body>
 
 </html>
