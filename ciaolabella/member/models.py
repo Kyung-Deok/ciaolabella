@@ -1,26 +1,36 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
 
-class MEMBER(models.Model):
-
-    user_nm = models.CharField(db_column='user_nm', max_length=50, null=False)
-    user_id = models.CharField(db_column='user_id', max_length=100, null=False)
-    user_pw = models.CharField(db_column='user_pw', max_length=100)
-    birth_nb = models.CharField(db_column='birth_nb', max_length=20, null=False)
-    gender_kb = models.CharField(db_column='gender_kb', max_length=20, null=False)
-    email_txt = models.EmailField(db_column='email_txt', max_length=150)
-    phone_nb = models.CharField(db_column='phone_nb', max_length=150)
-    region_kb = models.CharField(db_column='region_kb', max_length=100, null=False)
-    reg_date = models.DateTimeField(db_column='reg_date', auto_now_add=True)
-
-    class Meta:
-        db_table = 'MEMBER'
-
 class ECOPOINT(models.Model):
-    row_id = models.BigAutoField(primary_key=True, null=False)
-    user_nb = models.ForeignKey('Member', models.DO_NOTHING, db_column='user_nb', null=False)
-    save_tm = models.DateTimeField(db_column='save_tm', auto_now_add=True, null=False)
-    point_amt = models.BigIntegerField(db_column='point_amt', null=False)
+    row_id = models.BigAutoField(primary_key=True)
+    user_nb = models.BigIntegerField()
+    save_tm = models.DateTimeField()
+    point_amt = models.BigIntegerField()
 
     class Meta:
+        managed = False
         db_table = 'ECOPOINT'
+
+
+class MEMBER(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user_id = models.CharField(max_length=100)
+    user_pw = models.CharField(max_length=100)
+    user_nm = models.CharField(max_length=50)
+    birth_nb = models.CharField(max_length=20)
+    gender_kb = models.CharField(max_length=20)
+    email_txt = models.CharField(max_length=150)
+    phone_nb = models.CharField(max_length=150)
+    region_kb = models.CharField(max_length=100)
+    reg_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'MEMBER'

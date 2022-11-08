@@ -1,17 +1,15 @@
 from django.shortcuts import render
 from pymongo import MongoClient
-import pandas as pd
-import logging
 from datetime import datetime
-from member.models import MEMBER
-import json
+from ciaolabella.loggers import UserClickMenu, UserSearchLesswaste
+from ciaolabella.env_settings import MONGO_URL, MONGO_PORT
 
 def km_to_mile(km):
     mile = km * 0.621371
     return float(mile)
 
 def get_points(collection, coords, distance):
-    client = MongoClient("mongodb://127.0.0.1", 27017)
+    client = MongoClient(MONGO_URL, MONGO_PORT)
     db = client['multi_pjt3']
     coll = db[collection]
     dist = km_to_mile(distance) / 3963.2
@@ -28,38 +26,29 @@ def get_points(collection, coords, distance):
         data['title'] = doc['name']
         data['latlng'] = [doc['location']['coordinates'][1], doc['location']['coordinates'][0]]
         collection_list.append(data)
-
     return collection_list
 
 def map(request):
-    lng = 126.912583627
-    lat = 37.483568434
+    lng, lat = 126.912583627, 37.483568434
     zerowasteshop = get_points('zerowasteshop', [lng, lat], 10)
     recyclebox = get_points('recyclebox', [lng, lat], 10)
     center = [lat, lng]
-    if request.method == 'GET':
-        try:
-            # 로그 수집
-            # rs = MEMBER.objects.filter(id=request.session['row_id']).first()
-            # login_logger = logging.getLogger('log')
-            # data = {'row_id': rs.id , 'age_nb':rs.age_nb, 'gender_kb ': rs.gender_kb, 'region_kb':rs.region_kb,
-            #         'log_tm':str(datetime.now()), 'log_kb': 'lesswaste'}
-            # login_logger.info('menu_log', extra = data)
-            return render(request, 'lesswasteapp/lesswaste.html', 
-                {'center': center, 'zerowasteshop': zerowasteshop, 'recyclebox': recyclebox})
 
-        except KeyError:
-            context = {}
-            context['message'] = "로그인 해주세요"
-            return render(request, 'ciaolabella/index.html', context)
-    
+    if request.method == 'GET':
+        menuclick_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        UserClickMenu(request, 'lesswaste', menuclick_time)
+        return render(request, 'lesswasteapp/lesswaste.html',
+            {'center': center, 'zerowasteshop': zerowasteshop, 'recyclebox': recyclebox})
     else:
+        searchclick_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
             lat = float(request.POST['userLat'].strip())
             lng = float(request.POST['userLng'].strip())
+            radius_km = request.POST['radius']
+            UserSearchLesswaste(request, radius_km, center, searchclick_time)
             center = [lat, lng]
-            zerowasteshop = get_points('zerowasteshop', [lng, lat], 10)
-            recyclebox = get_points('recyclebox', [lng, lat], 10)
+            zerowasteshop = get_points('zerowasteshop', [lng, lat], radius_km)
+            recyclebox = get_points('recyclebox', [lng, lat], radius_km)
             return render(request, 'lesswasteapp/lesswaste.html', 
                 {'center': center, 'zerowasteshop': zerowasteshop, 'recyclebox': recyclebox})
         except:

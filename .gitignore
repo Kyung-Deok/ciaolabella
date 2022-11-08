@@ -1,0 +1,13 @@
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+env_settings.py
+nohup.out
+media
+models.py
+
+
+### Flask ###
+ecopointapp/test_imgs

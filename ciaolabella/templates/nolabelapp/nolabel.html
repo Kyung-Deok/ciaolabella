@@ -10,21 +10,13 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-<<<<<<< HEAD
     <link href="{% static 'img/logo_rel2.png' %}" rel="icon" type='images/png'>
-=======
-    <link href="{% static 'img/favicon.ico' %}" rel="icon">
->>>>>>> b0a3ced4b93961b03cb2707021d003b49126fc2e
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<<<<<<< HEAD
     <!-- <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet"> -->
     <link href="https://fonts.googleapis.com/css2?family=Jua&family=Lora:ital,wght@1,700&family=Permanent+Marker&display=swap" rel="stylesheet">
-=======
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
->>>>>>> b0a3ced4b93961b03cb2707021d003b49126fc2e
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
@@ -40,7 +32,6 @@
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
-<<<<<<< HEAD
     <!-- //// -->
 
     <style>
@@ -59,8 +50,6 @@
         }
 	</style>
 
-=======
->>>>>>> b0a3ced4b93961b03cb2707021d003b49126fc2e
     <!-- jquery-->
     <style>
         .image-wrapper {
@@ -80,6 +69,7 @@
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+
     <script>//ajax를 이용한 post통신에서 csrf_token문제 해결
         function getCookie(name) {
             var cookieValue = null;
@@ -111,8 +101,8 @@
                 }
             }
         });
-    </script>
-    <script>
+
+        var search_data;
         $(function(){
             $("#search_btn").click(function(){
                 var keyword = $("input[name=keyword]").val();
@@ -124,25 +114,28 @@
                 	dataType: "json",
                 	success: function(data){
                 		var key = Object.keys(data);
+                		search_data = data[key];
                 		$(".lyr1").html("");
                 		for(var i=0; i < data[key].length; i++){
                 			console.log(data[key][i]["title"]);
-<<<<<<< HEAD
+                			var link = data[key][i]['link'];
+                			var name = data[key][i]['title'];
+                            var volume = data[key][i]['volume'];
+                            var unitprice = data[key][i]['price_unit'];
                 			$(".lyr1").append(`<div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-=======
-                			$(".lyr1").append(`<div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
->>>>>>> b0a3ced4b93961b03cb2707021d003b49126fc2e
-	                                            <div class="property-item rounded overflow-hidden">
-		                                        <div class="image-wrapper position-relative overflow-hidden">
-			                                    <a href="${data[key][i]['link']}"><img class="image" src="${data[key][i]['img_link']}" alt=""></a>
-			                                    <div class="bg-primary rounded-top text-white position-absolute start-0 bottom-0 mx-4 pt-1 px-3">${data[key][i]['volume']}</div>
-		                                        </div>
-		                                        <div class="p-4 pb-0">
-			                                    <a class="d-block h5 mb-2" href="${data[key][i]['link']}">${data[key][i]['title']}</a>
-			                                    <h5 class="text-primary mb-3">${data[key][i]['price_unit']} 원/개</h5>
-		                                        </div>
-	                                            </div>
-                                                </div>`);
+                                            <div class="property-item rounded overflow-hidden">
+                                                <div class="image-wrapper position-relative overflow-hidden">
+                                                    <p onclick="clickLog(${i});">
+                                                        <img class="image" src="${data[key][i]['img_link']}" alt="">
+                                                    </p>
+                                                    <div class="bg-primary rounded-top text-white position-absolute start-0 bottom-0 mx-4 pt-1 px-3">${volume}</div>
+                                                    </div>
+                                                    <div class="p-4 pb-0">
+                                                        <p class="d-block h5 mb-2" onclick="clickLog(${i});">${name}</p>
+                                                        <h5 class="text-primary mb-3">${unitprice} 원/개</h5>
+                                                    </div>
+                                                </div>
+                                            </div>`);
                 	    }
                 	},
                 	error: function(request, error){
@@ -152,7 +145,26 @@
                 });
             });
         });
+
+        function clickLog(i) {
+            var link = search_data[i]['link'];
+            var name = search_data[i]['title'];
+            var volume = search_data[i]['volume'];
+            var unitprice = search_data[i]['price_unit'];
+            window.open(link);
+
+            $.ajax({
+                url: '/nolabel/click/',
+                method: "post",
+                async: true,
+                data: {'product_name': name, 'product_volume': volume,
+                       'product_unitprice': unitprice, 'csrfmiddlewaretoken': csrftoken},
+                success: function(){},
+                error: function(){}
+            });
+        };
     </script>
+
 </head>
 
 <body>
@@ -181,7 +193,6 @@
                     <div class="navbar-nav ms-auto">
                         <a href="{% url 'index' %}" class="nav-item nav-link">HOME</a>
                         <a href="{% url 'about' %}" class="nav-item nav-link">ABOUT</a>
-<<<<<<< HEAD
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">ECO POINT</a>
                             <div class="dropdown-menu rounded-0 m-0">
@@ -202,21 +213,6 @@
                             <br><br>
                             <a href="{% url 'member_page' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;">MYPAGE</a>
                             <a href="{% url 'member_logout' %}" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;">LOGOUT</a>
-=======
-                        <a href="{% url 'ecopoint' %}" class="nav-item nav-link">ECO POINT</a>
-                        <a href="{% url 'nolabel' %}" class="nav-item nav-link active">NO LABEL</a>
-                        <a href="" class="nav-item nav-link">LESS WASTE</a>
-                    </div>
-                    <div class="navbar-nav ms-auto">
-                        {% if not 'user_id' in request.session %}
-                            <a href="" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;" >SIGNUP</a><br>
-                            <a href="" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;" >SIGNIN</a>
-                        {% else %}
-                            <!-- <p style="padding: 10px">{{ request.session.user_id }} 님 어서오세요.</p> -->
-                            <br><br>
-                            <a href="" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;">MYPAGE</a>
-                            <a href="" class="btn btn-primary px-1 d-lg-flex" style="margin: 10px;">LOGOUT</a>
->>>>>>> b0a3ced4b93961b03cb2707021d003b49126fc2e
                         {% endif %}
 
                         {% if message %}
@@ -235,16 +231,10 @@
             <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
                 <div class="col-md-6 p-5 mt-lg-5">
                     <h1 class="display-5 animated fadeIn mb-4">무라벨 제품 검색</h1>
-<<<<<<< HEAD
-                    <p class="display-7">재활용하기 편리한 무라벨 제품을 한 눈에 볼 수 있고</p>
-                    <p class="display-7">사진을 클릭하면 바로 구매 사이트로 이동합니다!</p>
-=======
                     <p>재활용하기 편리한 무라벨 제품을 한 눈에 볼 수 있고</p>
                     <p>사진을 클릭하면 바로 구매 사이트로 이동합니다!</p>
->>>>>>> b0a3ced4b93961b03cb2707021d003b49126fc2e
                 </div>
                 <div class="col-md-6 animated fadeIn">
-                    <img class="img-fluid" src="img/header.jpg" alt="">
                 </div>
             </div>
         </div>
@@ -257,20 +247,12 @@
                     <div class="col-md-10">
                         <div class="row g-2">
                             <div class="col-md-12">
-<<<<<<< HEAD
-                                <input type="text" class="display-7 form-control border-0 py-3" placeholder="검색어 입력" name="keyword">
-=======
                                 <input type="text" class="form-control border-0 py-3" placeholder="검색어 입력" name="keyword">
->>>>>>> b0a3ced4b93961b03cb2707021d003b49126fc2e
                             </div>
                         </div>
                     </div>
                     <div class="col-md-2">
-<<<<<<< HEAD
-                        <input id="search_btn" type="button" class="display-7 btn btn-dark border-0 w-100 py-3" value="검색">
-=======
                         <input id="search_btn" type="button" class="btn btn-dark border-0 w-100 py-3" value="검색">
->>>>>>> b0a3ced4b93961b03cb2707021d003b49126fc2e
                     </div>
                 </div>
             </div>
@@ -305,7 +287,6 @@
                     <div class="col-lg-6 col-md-6">
                         <h5 class="text-white mb-4">Team Ohjijo</h5>
                         <a class="btn btn-link text-white-50" href="https://github.com/hanna-joo"><i class="fab fa-github fa-1x"></i>  [DE] hanna joo</a>
-<<<<<<< HEAD
                         <a class="btn btn-link text-white-50" href="https://github.com/yu-je0ng"><i class="fab fa-github fa-1x"></i>  [DE] yujeong go</a>
                         <a class="btn btn-link text-white-50" href="https://github.com/edusby"><i class="fab fa-github fa-1x"></i>  [DE] booyong shin</a>
                         <a class="btn btn-link text-white-50" href="https://github.com/SoyeoAn"><i class="fab fa-github fa-1x"></i>  [DS] soyeon an</a>
@@ -319,21 +300,6 @@
                         <a class="btn btn-link text-white-50" href="{% url 'ecopoint' %}">Eco Point</a>
                         <a class="btn btn-link text-white-50" href="{% url 'nolabel' %}">No Label</a>
                         <a class="btn btn-link text-white-50" href="{% url 'lesswaste' %}">Less Waste</a>
-=======
-                        <a class="btn btn-link text-white-50" href="https://github.com/hanna-joo"><i class="fab fa-github fa-1x"></i>  [DE] yujeong go</a>
-                        <a class="btn btn-link text-white-50" href="https://github.com/hanna-joo"><i class="fab fa-github fa-1x"></i>  [DE] booyong shin</a>
-                        <a class="btn btn-link text-white-50" href="https://github.com/hanna-joo"><i class="fab fa-github fa-1x"></i>  [DS] soyeon ahn</a>
-                        <p class="btn btn-link text-white-50" href="https://github.com/hanna-joo"><i class="fab fa-github fa-1x"></i>  [DS] gieun shin</p>
-                        <p class="btn btn-link text-white-50" href="https://github.com/hanna-joo"><i class="fab fa-github fa-1x"></i>  [DS] changhwan in</p>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <h5 class="text-white mb-4">Quick Links</h5>
-                        <a class="btn btn-link text-white-50" href="">Home</a>
-                        <a class="btn btn-link text-white-50" href="">About Us</a>
-                        <a class="btn btn-link text-white-50" href="">Eco Point</a>
-                        <a class="btn btn-link text-white-50" href="">No Label</a>
-                        <a class="btn btn-link text-white-50" href="">Less Waste</a>
->>>>>>> b0a3ced4b93961b03cb2707021d003b49126fc2e
                     </div>
                 </div>
             </div>
@@ -375,6 +341,7 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/logout.js' %}"></script>
 
 </body>
 

@@ -2,7 +2,6 @@ import logging
 from datetime import datetime
 import json
 
-
 class KafkaFormatterBase(logging.Formatter):
 
     def __init__(self, message_type='Kafka'):

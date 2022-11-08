@@ -12,28 +12,22 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from .env_settings import DATABASES, LOGGING, SECRET_KEY, CACHES
 import logging.config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_#t9zl4dmw@+3n)ut4xsikn5qbo@g4s1c!enq@l$2=3duq1(u-'
+SECRET_KEY = SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*', '.ciaolabella.shop']
 
-
 # Application definition
-
 INSTALLED_APPS = [
-    #"django_elasticsearch_dsl",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,136 +40,11 @@ INSTALLED_APPS = [
     'ciaoadmin',
 ]
 
-'''
-ELASTICSEARCH_DSL={
-    'default':{
-        'hosts': '35.79.157.151:8960'
-    },
-}
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-
-    'formatters': {
-        'pjt3': {
-            'format': '%(log_tm)s %(row_id)s %(message)s %(funcName)s %(log_kb)s %(row_id)s %(age_nb)s %(gender_kb )s %(region_kb)s' ,
-        },
-    },
-
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'pjt3'
-        },
-
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': BASE_DIR / 'logs/member.log',
-            'maxBytes': 1024*1024*5,  # 5 MB
-            'backupCount': 5,
-            'formatter': 'pjt3',
-        },
-        
-        'logstash': {
-            'level': 'INFO',
-            'class': 'logstash.TCPLogstashHandler',
-            'host': '35.79.157.151',
-            'port': 5044,
-            'version': 1,
-            'message_type': 'django',
-            'fqdn': True,
-            'tags': ['log'],
-         },
-      
-    },
-
-    'loggers': {
-        'log' : {
-            'handlers': ['logstash', 'file'],
-            'level': 'INFO',
-            'propagate': False,
-        }
-    }
-}
-'''
-LOGGING_CONFIG = None
-
-CUSTOM_LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-
-    'formatters': {
-        'stream': {
-            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        },
-    },
-
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'stream'
-        },
-
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': BASE_DIR / 'logs/member.log',
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 5,
-            'formatter': 'stream',
-        },
-
-        'kafka': {
-            'level': 'INFO',
-            'class': 'ciaolabella.handlers.KafkaHandler',
-            'host': '218.154.53.236',
-            'port': '9092',
-            'message_type': 'kafka',
-        },
-    },
-
-    'loggers': {
-        'ciaolabella.UserInOut': {
-            'handlers': ['console', 'file', 'kafka'],
-            'level': 'INFO',
-            'propagate': False,
-        }
-    }
-}
-
-logging.config.dictConfig(CUSTOM_LOGGING)
-
-'''
-        'kh': {
-            'level': 'INFO',
-            'class': 'jefka.KafkaHandler',
-            'host': '218.154.53.236',
-            'port': '9092',
-            'message_type': 'kafka',
-        },
-'''
-
-
-'''
-        'kh': {
-            'level': 'INFO',
-            'class': 'ciaolabella.handlers.KafkaHandler',
-            'broker': '218.154.53.236:9092',
-        },
-'''
-
-
-
-
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django_session_timeout.middleware.SessionTimeoutMiddleware',
+    'ciaolabella.session_settings.SessionTimeoutMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -205,31 +74,9 @@ WSGI_APPLICATION = 'ciaolabella.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'crawled_data', #데이터베이스 name
-#         'USER': 'root',
-#         'PASSWORD': '1234',
-#         'HOST': 'localhost',
-#         'PORT': '3306'
-#     }
-# }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-
+DATABASES = DATABASES
 
 # Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -245,13 +92,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/4.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Seoul'  # 한국 시간 적용 
+TIME_ZONE = 'Asia/Seoul'  # 한국 시간 적용
 
 USE_I18N = True
 
@@ -259,14 +103,29 @@ USE_L10N = True
 
 USE_TZ = False  # False 로 설정해야 DB에 변경 된 TIME_ZONE 이 반영 됨 
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
 STATIC_URL = 'static/'
+
 STATICFILES_DIRS = [BASE_DIR/'static']
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Session expiration
+SESSION_EXPIRE_SECONDS = 1800
+
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+
+SESSION_EXPIRE_LOG = True
+
+SESSION_TIMEOUT_REDIRECT = 'index'
+
+# User log
+LOGGING_CONFIG = None
+
+CUSTOM_LOGGING = LOGGING
+
+logging.config.dictConfig(CUSTOM_LOGGING)
+
+# Redis Cache (외부 서버 연결)
+CACHES = CACHES
