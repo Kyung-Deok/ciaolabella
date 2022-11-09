@@ -1,6 +1,8 @@
+import traceback
 import logging
 from datetime import datetime
 import json
+
 
 class KafkaFormatterBase(logging.Formatter):
 
@@ -30,10 +32,34 @@ class KafkaFormatterBase(logging.Formatter):
 
         return fields
 
+    # Error코드 수집용
+    def get_debug_fields(self, record):
+        fields = {
+            'stack_trace': self.format_exception(record.exc_info),
+            'lineno': record.lineno,
+            'process': record.process,
+            'thread_name': record.threadName,
+        }
+
+        # funcName was added in 2.5
+        if not getattr(record, 'funcName', None):
+            fields['funcName'] = record.funcName
+
+        # processName was added in 2.6
+        if not getattr(record, 'processName', None):
+            fields['processName'] = record.processName
+
+        return fields
+
     @classmethod
     def format_timestamp(cls, time):
         tstamp = datetime.utcfromtimestamp(time + 60*60*9)
         return tstamp.strftime("%Y-%m-%dT%H:%M:%S") + ".%03d" % (tstamp.microsecond / 1000) + "Z"
+
+    # Error코드 수집용
+    @classmethod
+    def format_exception(cls, exc_info):
+        return ''.join(traceback.format_exception(*exc_info)) if exc_info else ''
 
     # Producer쪽에서 직렬화 실행
     # def serialize(cls, message):
@@ -43,7 +69,7 @@ class KafkaFormatterBase(logging.Formatter):
 class KafkaFormatter(KafkaFormatterBase):
 
     def format(self, record):
-        # Create message dict
+
         message = {
             'messageType': self.message_type,
             'timestamp': self.format_timestamp(record.created),
@@ -56,7 +82,11 @@ class KafkaFormatter(KafkaFormatterBase):
             },
         }
 
-        # Add extra fields
+        # 주요내용 삽입
         message['fields']['fields'].update(self.get_extra_fields(record))
+
+        # Error코드 수집용
+        if record.exc_info:
+            message['fields']['fields'].update(self.get_debug_fields(record))
 
         return message
