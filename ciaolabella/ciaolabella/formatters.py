@@ -37,8 +37,6 @@ class KafkaFormatterBase(logging.Formatter):
         fields = {
             'stack_trace': self.format_exception(record.exc_info),
             'lineno': record.lineno,
-            'process': record.process,
-            'thread_name': record.threadName,
         }
 
         # funcName was added in 2.5
@@ -69,6 +67,9 @@ class KafkaFormatterBase(logging.Formatter):
 class KafkaFormatter(KafkaFormatterBase):
 
     def format(self, record):
+        if record.__dict__.get('request', None):
+            record.topic = 'log_error'
+            record.key = 'error'
 
         message = {
             'messageType': self.message_type,
