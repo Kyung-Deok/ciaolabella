@@ -161,11 +161,11 @@ def ecopoint2(request):
         member_id = request.session['member_id']
 
         # 하루 1번 제한
-        # eco_cache = cache.get(f'{member_id}_2')
-        # if eco_cache and eco_cache[0] == datetime.now().strftime("%Y:%m:%d"):
-        #     message = '오늘은 이미 에코포인트를 적립받으셨습니다.'
-        #     UserUsedEcopoint2(request, eco2upload_time, 0, 'OverCount')
-        #     return JsonResponse({'msg': message})
+        eco_cache = cache.get(f'{member_id}_2')
+        if eco_cache and eco_cache[0] == datetime.now().strftime("%Y:%m:%d"):
+            message = '오늘은 이미 에코포인트를 적립받으셨습니다.'
+            UserUsedEcopoint2(request, eco2upload_time, 0, 'OverCount')
+            return JsonResponse({'msg': message})
 
         image = request.FILES['image']
         url = FLASK_PORT + 'ecopoint2'
