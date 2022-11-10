@@ -86,12 +86,13 @@
 		            contentType: false,
                 	dataType: "json",
                 	success: function(data){
-                        // 결과 사진 가져오기.
-                        //$("#outputfile").attr("src" , "{% static '/ecopoint_static/img_output/ecopoint2/image0.jpg'%}");
-                        $("#result").html("");
-                        $("#result").append(`<div class="about-img position-relative overflow-hidden p-5 pe-0" id="result1">
-                                        <img class="img-fluid w-100" src="{% static '/ecopoint_static/img_output/ecopoint2/image0.jpg' %}" id="outputfile">
+                        var img = data['decode_img'];
+                        if (img){
+                            $("#result").html("");
+                            $("#result").append(`<div class="about-img position-relative overflow-hidden p-5 pe-0" id="result1">
+                                        <img class="img-fluid w-100" src="data:image/jpg;base64, ${img}" id="outputfile">
                                         </div>`);
+                        }
                         Swal.fire({
                             icon: 'info', 
                             text: data['msg'].replace(/\n/ig, '\n')

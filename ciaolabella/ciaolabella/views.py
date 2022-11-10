@@ -6,7 +6,6 @@ from ciaolabella.loggers import UserClickMenu, UserUsedEcopoint1, UserUsedEcopoi
 from ciaolabella.env_settings import FLASK_PORT, MONGO_PORT
 from datetime import datetime
 from member.models import MEMBER, ECOPOINT
-from . import ocr
 import random
 from pymongo import MongoClient
 from PIL import Image
@@ -14,6 +13,7 @@ import gridfs
 from bson.objectid import ObjectId
 import codecs
 from django.core.cache import cache
+import io
 
 def index(request): # main
     return render(request, 'ciaolabella/index.html')
@@ -53,11 +53,11 @@ def ecopoint(request):
             message = '16MB이하의 사진만 업로드 가능합니다.'
             UserUsedEcopoint1(request, eco1upload_time, fail_msg='ImgOverSize')
             return JsonResponse({'msg': message})
+        image_input = image.read()
 
         # 사진 메타데이터 인식 및 촬영 날짜 제한
         try:
-            #pic_time = Image.open(image)._getexif()[36867]
-            pic_time = '2022:11:08 17:18:20'
+            pic_time = Image.open(image)._getexif()[36867]
             if pic_time[:10] != datetime.now().strftime("%Y:%m:%d"):
                 message = '오늘 촬영한 사진을 업로드해 주세요.'
                 UserUsedEcopoint1(request, eco1upload_time, fail_msg='ImgNotToday')
@@ -83,12 +83,11 @@ def ecopoint(request):
         client = MongoClient("mongodb://admin:qwer1234@218.154.53.236", MONGO_PORT)
         db = client['rawimg']
         fs = gridfs.GridFS(db)
-        file_id = fs.put(image.read(), member_id=member_id, pic_time=pic_time)
-        #file_id = '63662953b4b738429945f671'
+        file_id = fs.put(image_input, member_id=member_id, pic_time=pic_time)
 
         # Flask와 통신하여 모델 적용
         data = {'file_id': str(file_id), 'member_id': member_id, 'pic_time': pic_time}
-        url = FLASK_PORT
+        url = FLASK_PORT + 'ecopoint1'
         try:
             resp = requests.post(url, data=data)
             result = resp.json() #json 문자열을 파이썬 객체로 변환
@@ -162,18 +161,26 @@ def ecopoint2(request):
         member_id = request.session['member_id']
 
         # 하루 1번 제한
-        eco_cache = cache.get(f'{member_id}_2')
-        # print(f'{member_id}_2', '캐시확인:', eco_cache)
-        if eco_cache and eco_cache[0] == datetime.now().strftime("%Y:%m:%d"):
-            message = '오늘은 이미 에코포인트를 적립받으셨습니다.'
-            UserUsedEcopoint2(request, eco2upload_time, 0, 'OverCount')
-            return JsonResponse({'msg': message})
+        # eco_cache = cache.get(f'{member_id}_2')
+        # if eco_cache and eco_cache[0] == datetime.now().strftime("%Y:%m:%d"):
+        #     message = '오늘은 이미 에코포인트를 적립받으셨습니다.'
+        #     UserUsedEcopoint2(request, eco2upload_time, 0, 'OverCount')
+        #     return JsonResponse({'msg': message})
 
         image = request.FILES['image']
-        result = ocr.ecopointtwo(image)
-        print(result)
+        url = FLASK_PORT + 'ecopoint2'
+        upload = {'image': image}
 
-        if ('무라벨'or'무라밸'or'라벨X'or'라밸X'or'라벨x'or'라밸X'or'노라밸'or'노라벨') in result:
+        try:
+            resp = requests.post(url, files=upload)
+            result = resp.json()
+            result = result['result']
+        except:
+            message = '다른 사진을 업로드 해주세요.'
+            UserUsedEcopoint2(request, eco2upload_time, fail_msg='ModelError')
+            return JsonResponse({'msg': message})
+
+        if ('무라벨'or'무라밸'or'라벨X'or'라밸X'or'라벨x'or'라밸x'or'노라밸'or'노라벨') in result:
             ecopoint = random.randrange(10, 51, 10)
             message = f"무라벨 제품을 구매하셨군요! \n{ecopoint} ECO POINT 가 적립되었습니다!"
             UserUsedEcopoint2(request, eco2upload_time, ecopoint)
@@ -192,13 +199,17 @@ def ecopoint2(request):
                     month_kb=month_kb,
                     point_amt=ecopoint
                 )
-
             eco_cache = [datetime.now().strftime("%Y:%m:%d")]
             cache.set(f'{member_id}_2', eco_cache, 86400)  # 하루 동안 유지
         else:
             message= '무라벨 제품이 아닙니다'
             UserUsedEcopoint2(request, eco2upload_time, 0, 'OcrNoDetect')
 
-        img_base64 = codecs.encode(image.read(), 'base64')
+        img = Image.open(image)
+        buffer = io.BytesIO()
+        img.save(buffer, format="JPEG")
+        img_binary = buffer.getvalue()
+        img_base64 = codecs.encode(img_binary, 'base64')
         decode_img = img_base64.decode('utf-8')
+
         return JsonResponse({'msg': message, 'decode_img':decode_img})
