@@ -3,7 +3,7 @@ import requests
 from django.http import JsonResponse
 import logging
 from ciaolabella.loggers import UserClickMenu, UserUsedEcopoint1, UserUsedEcopoint2
-from ciaolabella.env_settings import FLASK_PORT, MONGO_PORT
+from ciaolabella.env_settings import FLASK_PORT, MONGO_URL, MONGO_PORT
 from datetime import datetime
 from member.models import MEMBER, ECOPOINT
 import random
@@ -70,17 +70,17 @@ def ecopoint(request):
         # 사진 메타데이터로 하루 2번 제한 검증
         eco_cache = cache.get(f'{member_id}_1')
         if eco_cache and eco_cache[0] == datetime.now().strftime("%Y:%m:%d"):
-            if eco_cache[1][0] == 1 and pic_time == eco_cache[1][1]:
+            if eco_cache[1] == 1 and pic_time == eco_cache[2]:
                 message = '이미 에코포인트를 적립받은 이미지 입니다.'
                 UserUsedEcopoint1(request, eco1upload_time, fail_msg='ImgDuplicated')
                 return JsonResponse({'msg': message})
-            elif eco_cache[1][0] > 1:
+            elif eco_cache[1] > 1:
                 message = '오늘은 더이상 등록하실 수 없습니다.'
                 UserUsedEcopoint1(request, eco1upload_time, fail_msg='OverCount')
                 return JsonResponse({'msg': message})
 
         # image mongoDB에 저장
-        client = MongoClient("mongodb://admin:qwer1234@218.154.53.236", MONGO_PORT)
+        client = MongoClient(MONGO_URL, MONGO_PORT)
         db = client['rawimg']
         fs = gridfs.GridFS(db)
         file_id = fs.put(image_input, member_id=member_id, pic_time=pic_time)
