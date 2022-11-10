@@ -145,12 +145,12 @@ def member_login(request):
             context['user_id'] = rs.user_id
             context['user_nm'] = rs.user_nm
             context['message'] = rs.user_nm + "님이 로그인하셨습니다."
-
-            return render(request, 'ciaolabella/index.html', context)
+            context['login_chk'] = 1
 
         else:
-            context['message'] = "로그인 정보가 맞지않습니다.\\n\\n 확인하신 후 다시 시도해 주십시오."
-            return render(request, 'member/login.html', context)
+            context['message'] = "로그인 정보가 맞지않습니다.\n확인하신 후 다시 시도해 주십시오."
+
+        return JsonResponse(context)
 
 def member_logout(request):
     logout_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
