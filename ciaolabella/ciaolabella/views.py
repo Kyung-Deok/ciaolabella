@@ -3,7 +3,7 @@ import requests
 from django.http import JsonResponse
 import logging
 from ciaolabella.loggers import UserClickMenu, UserUsedEcopoint1, UserUsedEcopoint2
-from ciaolabella.env_settings import FLASK_PORT, MONGO_PORT
+from ciaolabella.env_settings import FLASK_PORT, MONGO_PORT, MONGO_URL
 from datetime import datetime
 from member.models import MEMBER, ECOPOINT
 import random
@@ -80,7 +80,7 @@ def ecopoint(request):
                 return JsonResponse({'msg': message})
 
         # image mongoDB에 저장
-        client = MongoClient("mongodb://admin:qwer1234@218.154.53.236", MONGO_PORT)
+        client = MongoClient(MONGO_URL, MONGO_PORT)
         db = client['rawimg']
         fs = gridfs.GridFS(db)
         file_id = fs.put(image_input, member_id=member_id, pic_time=pic_time)

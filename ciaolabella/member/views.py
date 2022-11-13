@@ -145,7 +145,6 @@ def member_login(request):
             context['user_id'] = rs.user_id
             context['user_nm'] = rs.user_nm
             context['message'] = rs.user_nm + "님이 로그인하셨습니다."
-
             return render(request, 'ciaolabella/index.html', context)
 
         else:
