@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import MEMBER, ECOPOINT
-from ciaolabella.loggers import UserLogin, UserLogout
+from ciaolog.loggers import UserLogin, UserLogout
 from datetime import datetime
-import sched
 import time
 from django.db.models import Sum
 from . import ecograph
@@ -146,7 +145,6 @@ def member_login(request):
             context['user_nm'] = rs.user_nm
             context['message'] = rs.user_nm + "님이 로그인하셨습니다."
             context['login_chk'] = 1
-
         else:
             context['message'] = "로그인 정보가 맞지않습니다.\n확인하신 후 다시 시도해 주십시오."
 

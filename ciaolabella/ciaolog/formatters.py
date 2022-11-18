@@ -1,7 +1,6 @@
 import traceback
 import logging
 from datetime import datetime
-import json
 
 
 class KafkaFormatterBase(logging.Formatter):

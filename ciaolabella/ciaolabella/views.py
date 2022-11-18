@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 import requests
 from django.http import JsonResponse
 import logging
-from ciaolabella.loggers import UserClickMenu, UserUsedEcopoint1, UserUsedEcopoint2
+from ciaolog.loggers import UserClickMenu, UserUsedEcopoint1, UserUsedEcopoint2
 from ciaolabella.env_settings import FLASK_PORT, MONGO_URL, MONGO_PORT
 from datetime import datetime
 from member.models import MEMBER, ECOPOINT

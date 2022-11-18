@@ -1,6 +1,4 @@
 import logging
-from pprint import pprint
-from datetime import datetime
 
 '''
  logger 별 이벤트

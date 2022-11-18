@@ -1,6 +1,6 @@
 from logging import StreamHandler
 from kafka import KafkaProducer
-from .formatters import KafkaFormatter
+from ciaolog.formatters import KafkaFormatter
 import json
 
 

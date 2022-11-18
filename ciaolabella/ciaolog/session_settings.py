@@ -3,7 +3,7 @@ import time
 from django.conf import settings
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import redirect
-from .loggers import UserLogout
+from ciaolog.loggers import UserLogout
 from datetime import datetime
 
 try:
