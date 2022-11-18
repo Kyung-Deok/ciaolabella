@@ -38,13 +38,14 @@ INSTALLED_APPS = [
     'ciaolabella',
     'member',
     'ciaoadmin',
+    'ciaolog',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     # 'django_session_timeout.middleware.SessionTimeoutMiddleware',
-    'ciaolabella.session_settings.SessionTimeoutMiddleware',
+    'ciaolog.session_settings.SessionTimeoutMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

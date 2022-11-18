@@ -84,24 +84,39 @@
                     <script>
                     function loginChk() {
                         var form = document.flogin;
-                        if (form.user_id.value=="") {
+                        var user_id = form.user_id.value;
+                        var user_pw = form.user_pw.value;
+                        if (user_id=="") {
                             alert("회원 아이디를 입력해 주십시오.");
                             form.user_id.focus();
                             return;
                         }
-                        if (form.user_pw.value=="") {
+                        if (user_pw=="") {
                             alert("비밀번호를 입력해 주십시오.");
                             form.user_pw.focus();
                             return;
                         }
-                        form.action = "/member/login/";
-                        form.submit();
-                    }
+
+                        $.ajax({
+							url: '/member/login/',
+							type: 'POST',
+							data: {'user_id': user_id, 'user_pw': user_pw},
+							dataType: 'json',
+							success: function(context) {
+							  console.log('success')
+							  var message = context['message']
+							  alert(message);
+							  var login_chk = context['login_chk']
+							  if (login_chk) {
+							  	window.location = '/';
+							  }
+							},
+							error: function(){
+							  console.log('fail')
+							}
+						}); //ajax끝
+					}
                     </script>
-                    
-                    {% if message %}
-                    <script>alert('{{ message }}');</script>
-                    {% endif %}
 
 					<div class="flex-col-c p-t-170 p-b-40">
 						<span class="txt1 p-b-9">

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from pymongo import MongoClient
 from datetime import datetime
-from ciaolabella.loggers import UserClickMenu, UserSearchLesswaste
+from ciaolog.loggers import UserClickMenu, UserSearchLesswaste
 from ciaolabella.env_settings import MONGO_URL, MONGO_PORT
 
 def km_to_mile(km):

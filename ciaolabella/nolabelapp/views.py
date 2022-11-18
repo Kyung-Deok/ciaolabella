@@ -4,7 +4,7 @@ from rest_framework import status
 from elasticsearch import Elasticsearch
 from django.http import JsonResponse
 from ciaolabella.env_settings import ES_PORT
-from ciaolabella.loggers import UserClickMenu, UserSearchProduct, UserClickProduct
+from ciaolog.loggers import UserClickMenu, UserSearchProduct, UserClickProduct
 from datetime import datetime
 
 def trans(hits):
