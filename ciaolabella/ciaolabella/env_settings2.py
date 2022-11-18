@@ -1,6 +1,4 @@
-import os
 from datetime import date
-import logging
 
 LOGGING = {
     'version': 1,
