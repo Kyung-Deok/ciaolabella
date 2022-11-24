@@ -8,7 +8,7 @@ class KafkaHandler(StreamHandler, object):
 
     def __init__(self, host, port, message_type='Kafka'):
         super(KafkaHandler, self).__init__()
-        self.broker = host + ':' + port
+        self.broker = [host + ':' + p for p in port.split(',')]
 
         self.kafka_broker = MyKafka(self.broker)
         self.formatter = KafkaFormatter(message_type)
@@ -26,5 +26,11 @@ class MyKafka(object):
                                       bootstrap_servers=kafka_brokers)
 
     def send(self, data, topic, key):
-        result = self.producer.send(topic, key=key, value=data)
+        result = self.producer.send(topic, key=key, value=data, partition=self.partition(key))
         print("kafka send result: {}".format(result.get()))
+
+    def partition(self, key):
+        if key in ['logout', '2', 'click']:
+            return 1
+        else:
+            return 0
