@@ -10,7 +10,7 @@ def km_to_mile(km):
 
 def get_points(collection, coords, distance):
     client = MongoClient(MONGO_URL, MONGO_PORT)
-    db = client['multi_pjt3']
+    db = client['lesswaste']
     coll = db[collection]
     dist = km_to_mile(distance) / 3963.2
     collection_list = []
@@ -23,7 +23,10 @@ def get_points(collection, coords, distance):
     }, {'_id': 0})
     for doc in cursor:
         data = dict()
-        data['title'] = doc['name']
+        if collection == 'zerowasteshop':
+            data['title'] = doc['store_nm']
+        else:
+            data['title'] = doc['box_nm']
         data['latlng'] = [doc['location']['coordinates'][1], doc['location']['coordinates'][0]]
         collection_list.append(data)
     return collection_list
@@ -44,11 +47,11 @@ def map(request):
         try:
             lat = float(request.POST['userLat'].strip())
             lng = float(request.POST['userLng'].strip())
-            radius_km = request.POST['radius']
-            UserSearchLesswaste(request, radius_km, center, searchclick_time)
+            radius_km = int(request.POST['radius'])
             center = [lat, lng]
             zerowasteshop = get_points('zerowasteshop', [lng, lat], radius_km)
             recyclebox = get_points('recyclebox', [lng, lat], radius_km)
+            UserSearchLesswaste(request, radius_km, center, searchclick_time)
             return render(request, 'lesswasteapp/lesswaste.html', 
                 {'center': center, 'zerowasteshop': zerowasteshop, 'recyclebox': recyclebox})
         except:
