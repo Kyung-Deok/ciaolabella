@@ -26,5 +26,11 @@ class MyKafka(object):
                                       bootstrap_servers=kafka_brokers)
 
     def send(self, data, topic, key):
-        result = self.producer.send(topic, key=key, value=data)
+        result = self.producer.send(topic, key=key, value=data, partition=self.partition(key))
         print("kafka send result: {}".format(result.get()))
+
+    def partition(self, key):
+        if key in ['logout', '2', 'click']:
+            return 1
+        else:
+            return 0

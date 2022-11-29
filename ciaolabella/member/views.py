@@ -116,7 +116,7 @@ def member_reg(request):
 
 def member_login(request):
     if request.method == "GET":
-        if request.session.get("member_id", None) is not None :
+        if request.session.get("member_id", None) is not None:
             return redirect("index")
         return render(request, 'member/login.html')
 
