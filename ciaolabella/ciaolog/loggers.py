@@ -112,7 +112,7 @@ def UserClickProduct(request, product_name, product_volume, product_unitprice, p
     user_info = UserInfo(request)
     data = {
             'topic': 'log_nolabel',
-            'key': 'cilck',
+            'key': 'click',
             'member_id': user_info[0],
             'user_gender': user_info[1],
             'user_age': user_info[2],

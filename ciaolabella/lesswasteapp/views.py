@@ -47,11 +47,11 @@ def map(request):
         try:
             lat = float(request.POST['userLat'].strip())
             lng = float(request.POST['userLng'].strip())
-            radius_km = request.POST['radius']
-            UserSearchLesswaste(request, radius_km, center, searchclick_time)
+            radius_km = int(request.POST['radius'])
             center = [lat, lng]
             zerowasteshop = get_points('zerowasteshop', [lng, lat], radius_km)
             recyclebox = get_points('recyclebox', [lng, lat], radius_km)
+            UserSearchLesswaste(request, radius_km, center, searchclick_time)
             return render(request, 'lesswasteapp/lesswaste.html', 
                 {'center': center, 'zerowasteshop': zerowasteshop, 'recyclebox': recyclebox})
         except:
