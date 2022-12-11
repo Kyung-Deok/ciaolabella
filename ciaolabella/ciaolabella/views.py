@@ -204,12 +204,14 @@ def ecopoint2(request):
         else:
             message= '무라벨 제품이 아닙니다'
             UserUsedEcopoint2(request, eco2upload_time, 0, 'OcrNoDetect')
-
-        img = Image.open(image)
-        buffer = io.BytesIO()
-        img.save(buffer, format="JPEG")
-        img_binary = buffer.getvalue()
-        img_base64 = codecs.encode(img_binary, 'base64')
-        decode_img = img_base64.decode('utf-8')
+        try:
+            img = Image.open(image)
+            buffer = io.BytesIO()
+            img.save(buffer, format="JPEG")
+            img_binary = buffer.getvalue()
+            img_base64 = codecs.encode(img_binary, 'base64')
+            decode_img = img_base64.decode('utf-8')
+        except:
+            decode_img = ''
 
         return JsonResponse({'msg': message, 'decode_img':decode_img})
