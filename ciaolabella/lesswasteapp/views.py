@@ -20,7 +20,7 @@ def get_points(collection, coords, distance):
                 '$centerSphere': [coords, dist]
             }
         }
-    }, {'_id': 0})
+    })
     for doc in cursor:
         data = dict()
         if collection == 'zerowasteshop':

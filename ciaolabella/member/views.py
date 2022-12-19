@@ -8,6 +8,9 @@ from django.db.models import Sum
 from . import ecograph
 from django.http import JsonResponse
 
+import redis
+from rediscluster import RedisCluster
+
 
 def member_page(request):
 
@@ -64,7 +67,36 @@ def member_page(request):
             context['temp'] = '13.5°C' 
     except:
             context['grade'] = 0
-            context['temp'] = '14.5°C'       
+            context['temp'] = '14.5°C'
+
+    # 실시간 검색어
+    search_dic = {}
+    date = datetime.today().strftime('%Y%m%d')
+    age_cri = 10*((datetime.today().year - int(rs.birth_dt[:4]))//10)
+    context['age_cri'] = age_cri
+    gen_cri = rs.gender_kb
+    context['gender_cri'] = '남성' if gen_cri == 'M' else '여성'
+
+    r = RedisCluster(host='218.154.53.236', port=7300, password='xpxmfltm1019', decode_responses=True)
+
+    age_search, gen_search = {}, {}
+    for key in r.scan_iter(match=f'search:{date}:*:{age_cri}:*', count=100):
+        word = key.split(':')[-1]
+        count = r.hget(key, 'count')
+        age_search[word] = count
+    age_search = sorted(age_search.items(), key = lambda x: -int(x[1]))
+    for i in range(min(5, len(age_search))):
+        search_dic[f'age{i+1}'] = age_search[i][0]
+
+    for key in r.scan_iter(match=f'search:{date}:{gen_cri}:*', count=100):
+        word = key.split(':')[-1]
+        count = r.hget(key, 'count')
+        gen_search[word] = count
+    gen_search = sorted(gen_search.items(), key = lambda x: -int(x[1]))
+    for i in range(min(5, len(gen_search))):
+        search_dic[f'gen{i+1}'] = gen_search[i][0]
+
+    context['search'] = search_dic
         
     # 기간별 에코포인트
     try:
