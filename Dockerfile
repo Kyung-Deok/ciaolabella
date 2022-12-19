@@ -1,83 +1,30 @@
-#첫 빌드시 : docker-compose up --build
-#이후 : docker-compose up
-# 방화벽 설정으로 실행 안될때 iptables 초기화 
-# sudo iptables -t filter -F && sudo iptables -t filter -X && sudo systemctl restart docker
-version: "3"
-services:
-    nginx:
-        image: nginx:1.14.0
-        container_name : nginx_ciao
-        volumes: 
-            - /home/ubuntu/nginx/nginx.conf:/etc/nginx/nginx.conf
-            - /home/ubuntu/ciaolabella:/home/ubuntu/ciaolabella
-            - /etc/letsencrypt/:/etc/letsencrypt/
-            - /var/www/certbot/:/var/www/letsencrypt/
-        ports:
-            - "80:80"
-            - "443:443"
-        depends_on : 
-            - ciao1
-            - ciao2
-            - ciao3
-        tty: true
-        stdin_open: true
+FROM python:3.9.13
 
-    ciao1:
-        build : ./ciaolabella
-        container_name : ciao1
-        # volumes: 
-            # - /home/ubuntu/ciaolabella:/home/ubuntu/ciaolabella
-            # - ./config/gunicorn:/etc/systemd/system
-        command: bash -c "python3 manage.py makemigrations ciaoadmin
-            && python3 manage.py makemigrations lesswasteapp
-            && python3 manage.py makemigrations member
-            && python3 manage.py makemigrations nolabelapp
-            && python3 manage.py migrate   
-            && python3 manage.py collectstatic --noinput
-            && gunicorn ciaolabella.wsgi -b 0.0.0.0:8990"
-        ports: 
-            - "8990:80"
-        expose: 
-            - "8990"
-        tty: true
-        stdin_open: true
+# 제작자
+LABEL contributers="Team Ozi"
 
-    ciao1:
-        build : ./ciaolabella
-        container_name : ciao1
-        # volumes: 
-            # - /home/ubuntu/ciaolabella:/home/ubuntu/ciaolabella
-            # - ./config/gunicorn:/etc/systemd/system
-        command: bash -c "python3 manage.py makemigrations ciaoadmin
-            && python3 manage.py makemigrations lesswasteapp
-            && python3 manage.py makemigrations member
-            && python3 manage.py makemigrations nolabelapp
-            && python3 manage.py migrate   
-            && python3 manage.py collectstatic --noinput
-            && gunicorn ciaolabella.wsgi -b 0.0.0.0:8991"
-        ports: 
-            - "8991:80"
-        expose: 
-            - "8991"
-        tty: true
-        stdin_open: true
+# 컨테이너 내 프로젝트 root directory 설정
+WORKDIR /home/ubuntu/ciaolabella
 
-    ciao1:
-        build : ./ciaolabella
-        container_name : ciao1
-        # volumes: 
-            # - /home/ubuntu/ciaolabella:/home/ubuntu/ciaolabella
-            # - ./config/gunicorn:/etc/systemd/system
-        command: bash -c "python3 manage.py makemigrations ciaoadmin
-            && python3 manage.py makemigrations lesswasteapp
-            && python3 manage.py makemigrations member
-            && python3 manage.py makemigrations nolabelapp
-            && python3 manage.py migrate   
-            && python3 manage.py collectstatic --noinput
-            && gunicorn ciaolabella.wsgi -b 0.0.0.0:8992"
-        ports: 
-            - "8992:80"
-        expose: 
-            - "8992"
-        tty: true
-        stdin_open: true
+RUN apt-get -y update
+RUN apt-get -y install vim
+
+# 필요한 module 설치
+COPY requirements.txt .
+
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# 프로젝트 코드 복사
+# COPY [현재 로컬에서 가져갈 파일] [컨테이너로 옮길 경로]
+COPY . .
+
+# ### 이 아래 command들은 docker-compose에 작성할 내용이므로, 확인 후 삭제한다.
+# # 포트 설정
+# EXPOSE 80
+
+# gunicorn 실행
+# CMD ["gunicorn", "--bind", "0.0.0.0:8901", "ciaolabella.wsgi:application"]
+# 테스트로 일단 python run으로 ...
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8902"]
