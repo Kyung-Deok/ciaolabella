@@ -138,7 +138,7 @@ def ecopoint(request):
 
                 eco_cache = [datetime.now().strftime("%Y:%m:%d"), count, pic_time]
                 cache.set(f'{member_id}_1', eco_cache, 86400)  # 하루 동안 유지
-        UserUsedEcopoint1(request, ecopoint, file_id, eco1upload_time, msg)
+        UserUsedEcopoint1(request, eco1upload_time, ecopoint, file_id, msg)
 
         return JsonResponse({'msg': message, 'decode_img': decode_img})
 

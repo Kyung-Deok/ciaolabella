@@ -2,13 +2,12 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import MEMBER, ECOPOINT
 from ciaolog.loggers import UserLogin, UserLogout
+from ciaolabella.env_settings import REDIS_NODES, REDIS_PW
 from datetime import datetime
 import time
 from django.db.models import Sum
 from . import ecograph
 from django.http import JsonResponse
-
-import redis
 from rediscluster import RedisCluster
 
 
@@ -77,7 +76,7 @@ def member_page(request):
     gen_cri = rs.gender_kb
     context['gender_cri'] = '남성' if gen_cri == 'M' else '여성'
 
-    r = RedisCluster(host='218.154.53.236', port=7300, password='xpxmfltm1019', decode_responses=True)
+    r = RedisCluster(startup_nodes=REDIS_NODES, password=REDIS_PW, decode_responses=True)
 
     age_search, gen_search = {}, {}
     for key in r.scan_iter(match=f'search:{date}:*:{age_cri}:*', count=100):
