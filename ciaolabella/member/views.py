@@ -29,7 +29,7 @@ def member_page(request):
 
     # 에코 등급
     try :
-        if 0 < total <= 10:
+        if total <= 10:
             context['grade'] = 0
             context['temp'] = '14.5°C'
         elif 10 <  total <= 50:

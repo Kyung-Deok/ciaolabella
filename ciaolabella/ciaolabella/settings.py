@@ -128,5 +128,5 @@ CUSTOM_LOGGING = LOGGING
 
 logging.config.dictConfig(CUSTOM_LOGGING)
 
-# Redis Cache (외부 서버 연결)
+# Redis Cache
 CACHES = CACHES
