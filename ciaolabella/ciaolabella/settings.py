@@ -106,9 +106,9 @@ USE_TZ = False  # False 로 설정해야 DB에 변경 된 TIME_ZONE 이 반영 �
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-
-STATICFILES_DIRS = [BASE_DIR/'static']
-
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
+# STATICFILES_DIRS = [BASE_DIR/'static']
+STATICFILES_DIRS = []
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
