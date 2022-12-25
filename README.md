@@ -75,18 +75,18 @@
 * 로그 집계 데이터를 2차적으로 Kafka에 저장
   * Warm data로 활용하기 위하여 최근 1주일치 데이터에 대해 MongoDB에 저장 => Grafana를 통한 시각화
   * Cool data로 활용하기 위하여 전체 데이터를 Hadoop에 parquet 형식으로 저장
-
+<br><br>
 ### 사용자 이미지 데이터
 ![image_pipeline](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fst5dt%2FbtrUxpLw4L5%2Fa1INFUKaCa7QmRt8XmBkJk%2Fimg.png)
 * django 서비스에서 유저가 업로드한 이미지 원본을 grifs를 이용하여 mongodb에 저장
 * flask app에서 원본 이미지에 대한 yolov5모델 결과가 포함된 이미지를 grifs를 이용하여 mongodb에 저장 
-
+<br><br>
 ### nolabal 제품 정보 데이터
 ![nolabel_pipeline](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fddv8U1%2FbtrUuQpJIBP%2FIKPlXmd5VoZxjy5ESBq9B1%2Fimg.png)
 * 파이썬 스크립트를 통하여 웹에서 nolabel 제품데이터 크롤링 후 원본 hadoop에 적재
 * spark를 통한 원본 데이터 가공 후 kafka 적재 후 es 저장
 * 매주 일요일 02:00 데이터 업데이트 되도록 airflow를 통한 스케쥴링
-
+<br><br>
 ### lesswaste 위치 데이터
 ![lesswaste_pipeline](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbyN5bs%2FbtrUyhUcJJ0%2FkzZDrYU6EVSQQoa5LKWDB1%2Fimg.png)
 * api, 크롤링 등을 통해 수집한 원본 데이터 hadoop 적재
