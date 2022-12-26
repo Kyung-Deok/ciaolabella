@@ -4,7 +4,7 @@ FROM python:3.9.13
 LABEL contributers="Team Ozi"
 
 # 컨테이너 내 프로젝트 root directory 설정
-WORKDIR /home/ubuntu/ciaolabella
+WORKDIR /home/ubuntu/ciaolabella_2
 
 RUN apt-get -y update
 RUN apt-get -y install vim
